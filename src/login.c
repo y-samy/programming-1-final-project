@@ -1,74 +1,69 @@
+#include "login.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-struct login{
-    char username[100];
-    char password[100];
-}users[100];
 
-int main()
+typedef struct {
+    size_t count;
+    user_t users[100];
+} user_list;
+
+user_list *get_user_list()
 {
-    int i=0,j=0;
-    struct login current;
-    FILE *userf=fopen("users.txt","r+");
-    if (!userf)
-    {
-        printf("Error opening users file!");
+    static user_list users_l;
+    if (users_l.count)
+        return &users_l;
+    FILE *user_file = fopen("users.txt", "r");
+    if (!user_file) {
+        fprintf (stderr, "Error Opening Users File.\nfopen() in %s() failed.\n", __func__);
         exit(1);
     }
-    else
-    while (!feof(userf))
+    while (!feof(user_file))
     {
-        fscanf(userf,"%99s %99s",users[i].username,users[i].password);
-        i++;
+        fscanf(user_file,"%99s %99s",&users_l.users[users_l.count].username,&users_l.users[users_l.count].password);
+        users_l.count++;
     }
-    printf("Enter login data:\n");
+}
 
-    printf(">Username: ");
-    scanf("%99s",current.username);
+user_t session()
+{
+    user_t user;
+    user.logged_in = false;
+    get_user_list();
+    return user;
+}
 
-    printf(">Password: ");
-    scanf("%99s",current.password);
+bool is_logged_in(user_t *user)
+{
+    return user->logged_in;
+}
 
-    int valid = 0;
-    for (j = 0; j < i; j++) {
-        if (!strcmp(current.username, users[j].username) && !strcmp(current.password, users[j].password))
-        {
-            valid = 1;
+bool verify_username(user_t *user, const char *username)
+{
+    size_t j = 0;
+    bool valid = false;
+    user_list *users_l = get_user_list();
+    for (j = 0; j < users_l->count; j++) {
+        if (!strcmp(username, users_l->users[j].username)) {
+            valid = true;
             break;
         }
     }
-
     if (valid) {
-        printf("Login successful!\n");
-    } else {
-        printf("Invalid username or password.\n");
-        exit(1);
+        strcpy(user->username,users_l->users[j].username);
+        strcpy(user->password,users_l->users[j].password);
     }
+    return valid;
+}
 
-    printf("\nMAIN MENU\n");
-    printf("1.Reserve a Room\
-            \n2.Check-in\
-            \n3.Cancel Reservation\
-            \n4.Check-out\
-            \n5.Check Room Availability\
-            \n6.View Customer Details\
-            \n7.Edit Reservation Details\
-            \n8.Search\
-            \n9.Reservation Report\
-            \n10.Exit\
-            \n>Choose an Option: ");
-    int menu;scanf("%d",&menu);
-    while (menu<0 || menu>10)
-    {
-        printf("please enter valid input: ");
-        scanf("%d",&menu);
+bool verify_password(user_t *user, const char *password)
+{
+    size_t j = 0;
+    bool valid = false;
+    valid = !(strcmp(password, user->password));
+    if (valid) {
+        user->logged_in = true;
+        strcpy(user->password, password);
     }
-    if(menu==10)
-    {
-        printf("ByeBye!");
-        exit(1);
-    }
-
-    return 0;
+    return valid;
 }
