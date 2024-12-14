@@ -60,7 +60,7 @@ void login_menu(void)
         input_attempts = 0;
         do {
             if (!input_attempts)
-                sprintf(prompt, "%Password: ", CLEAR_LN);
+                sprintf(prompt, "%sPassword: ", CLEAR_LN);
             else
                 sprintf(prompt, "%sPassword (%d attempts): ", CLEAR_LN, input_attempts);
             input(password, prompt, PASSWORD_LEN, ECHO_MASK);
