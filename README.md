@@ -2,6 +2,13 @@
 
 A hotel reservation system with a plaintext csv-like database server made in C.
 
+## Contributors
+[David Michael](https://github.com/davidyassa)
+[Mina Youssef](https://github.com/minawashere)
+[Adham Gaweesh](https://github.com/CosmicBreadCat)
+[Mohamed Ashraf](https://github.com/mashraf282)
+[Youssef Samy](https://github.com/y-samy)
+
 
 ## Code Conventions & Guidelines
 This section draws inspiration from The Linux Kernel Coding Style for [v4.10](https://www.kernel.org/doc/html/v4.10/process/coding-style.html#typedefs), [v6.8](https://www.kernel.org/doc/html/v6.8/process/coding-style.html) and the Style Guide for Python Code [PEP-8](https://peps.python.org/pep-0008/).
