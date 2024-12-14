@@ -49,8 +49,10 @@ bool verify_username(user_t *user, const char *username)
             break;
         }
     }
-    if (valid)
-        strcpy(user->username,username);
+    if (valid) {
+        strcpy(user->username,users_l->users[j].username);
+        strcpy(user->password,users_l->users[j].password);
+    }
     return valid;
 }
 
@@ -58,21 +60,10 @@ bool verify_password(user_t *user, const char *password)
 {
     size_t j = 0;
     bool valid = false;
-    user_list *users_l = get_user_list();
-    for (j = 0; j < users_l->count; j++) {
-        if (!strcmp(password, users_l->users[j].password)) {
-            valid = true;
-            break;
-        }
-    }
+    valid = !(strcmp(password, user->password));
     if (valid) {
-        auth_user(user);
+        user->logged_in = true;
         strcpy(user->password, password);
     }
     return valid;
-}
-
-void auth_user(user_t *user)
-{
-    user->logged_in = true;
 }

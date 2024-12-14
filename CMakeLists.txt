@@ -8,9 +8,7 @@ add_executable(hotel src/main.c
         src/login.h
         src/ui.c
         src/ui.h
-        src/parse.c
-        src/parse.h
         src/platform.c
         src/platform.h
-        src/error.c
-        src/error.h)
+        src/libui.c
+        src/libui.h)

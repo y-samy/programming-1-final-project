@@ -17,8 +17,9 @@ typedef struct {
 #define LOGIN_SUCCES 0
 #define LOGIN_ERROR 1
 
+#define PASSWORD_ATTEMPTS 3
+
 user_t session(void);
 bool is_logged_in(user_t *user);
 bool verify_username(user_t *user, const char *username);
 bool verify_password(user_t *user, const char *password);
-void auth_user(user_t *user);
