@@ -20,5 +20,12 @@
 #define ARR_UP_KEY -'A'
 #define ARR_DOWN_KEY -'B'
 
+#ifdef _WIN32
 #define ARR_UP_EC 72
 #define ARR_DOWN_EC 80
+#else
+#ifdef __unix__
+#define ARR_UP_EC 65
+#define ARR_DOWN_EC 66
+#endif
+#endif

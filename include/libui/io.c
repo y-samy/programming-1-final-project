@@ -60,6 +60,10 @@ int input(char *buffer, char* prompt_s, int max_size, int echo)
 
 int choices(char *choices)
 {
+#ifdef __unix__
+    termios_echo(false);
+#endif
+
     printf(CARET_HIDE);
     int current_choice = 1;
     int i = 0, choice_count = 0;
@@ -85,13 +89,20 @@ int choices(char *choices)
     char c;
     while (1) {
         c = get_key();
-        if (c == ESC_KEY)
+        if (c == ESC_KEY){
+            #ifdef __unix__
+    termios_echo(true);
+#endif
             return IO_STATUS_ESC;
+        }
         if (c == EOF || c == CTRL_C_KEY)
             exit(ABRUPT_EXIT);
         if ((c == '\n' || c == '\r')) {
             free(_choices_s);
             free(choice_i);
+#ifdef __unix__
+            termios_echo(true);
+#endif
             return current_choice;
         }
         if (c == ARR_UP_KEY && current_choice > 1) {
