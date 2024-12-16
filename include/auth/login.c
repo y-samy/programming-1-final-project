@@ -3,14 +3,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct {
+struct user_list {
     size_t count;
     user_t users[100];
-} user_list;
+};
 
-user_list *get_user_list()
+struct user_list *get_user_list()
 {
-    static user_list users_l;
+    static struct user_list users_l;
     if (users_l.count)
         return &users_l;
     FILE *user_file = fopen("users.txt", "r");
@@ -25,7 +25,7 @@ user_list *get_user_list()
     }
 }
 
-user_t session()
+user_t user_session()
 {
     user_t user;
     user.logged_in = false;
@@ -42,7 +42,7 @@ bool verify_username(user_t *user, const char *username)
 {
     size_t j = 0;
     bool valid = false;
-    user_list *users_l = get_user_list();
+    struct user_list *users_l = get_user_list();
     for (j = 0; j < users_l->count; j++) {
         if (!strcmp(username, users_l->users[j].username)) {
             valid = true;

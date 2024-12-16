@@ -19,7 +19,7 @@ typedef struct {
 
 #define PASSWORD_ATTEMPTS 3
 
-user_t session(void);
+user_t user_session(void);
 bool is_logged_in(user_t *user);
 bool verify_username(user_t *user, const char *username);
 bool verify_password(user_t *user, const char *password);

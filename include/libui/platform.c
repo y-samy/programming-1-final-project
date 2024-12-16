@@ -22,6 +22,13 @@ int get_key(void)
         switch (c) {
             case ESC_KEY:
                 c = ESC_KEY;
+                break;
+            case ARR_UP_EC:
+                c = ARR_UP_KEY;
+                break;
+            case ARR_DOWN_EC:
+                c = ARR_DOWN_KEY;
+                break;
             default:
                 c = 0;
         }
@@ -77,6 +84,12 @@ int get_key(void)
             return ESC_KEY;
         if (c == '[')
             switch (c) {
+                case ARR_UP_EC:
+                    c = ARR_UP_KEY;
+                break;
+                case ARR_DOWN_EC:
+                    c = ARR_DOWN_KEY;
+                break;
                 default:
                     c = 0;
             }
