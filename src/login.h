@@ -23,3 +23,4 @@ user_t session(void);
 bool is_logged_in(user_t *user);
 bool verify_username(user_t *user, const char *username);
 bool verify_password(user_t *user, const char *password);
+void logout(user_t *user);

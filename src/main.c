@@ -3,7 +3,6 @@
 
 int main(int argc, char *argv[])
 {
-    login_menu();
-    ui_wait(5);
+    root_menu();
     return 0;
 }

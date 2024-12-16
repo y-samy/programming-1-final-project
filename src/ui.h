@@ -4,5 +4,5 @@
  */
 #pragma once
 
-void ui_wait(int seconds);
+void root_menu(void);
 void login_menu(void);

@@ -67,3 +67,8 @@ bool verify_password(user_t *user, const char *password)
     }
     return valid;
 }
+
+void logout(user_t *user)
+{
+    user->logged_in = false;
+}
