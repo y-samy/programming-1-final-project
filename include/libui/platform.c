@@ -78,11 +78,13 @@ int get_key(void)
 {
 
     int c = getchar();
-    if (c == ESC_K) {
+    if (c == ESC_KEY) {
         c = getchar();
         if (c == ESC_KEY)
             return ESC_KEY;
         if (c == '[')
+        {
+            c = getchar();
             switch (c) {
                 case ARR_UP_EC:
                     c = ARR_UP_KEY;
@@ -93,7 +95,7 @@ int get_key(void)
                 default:
                     c = 0;
             }
-        return 0;
+        }
     }
     return c;
 }
