@@ -17,8 +17,8 @@
 #define BACKSPACE_KEY 8
 #define DEL_KEY 127
 
-#define ARR_UP_KEY -1
-#define ARR_DOWN_KEY -2
+#define ARR_UP_KEY -'A'
+#define ARR_DOWN_KEY -'B'
 
-#define ARR_UP_EC 'A'
-#define ARR_DOWN_EC 'B'
+#define ARR_UP_EC 72
+#define ARR_DOWN_EC 80
