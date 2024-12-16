@@ -3,6 +3,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+void display_menu(char *menu)
+{
+    clear_screen();
+    printf("%s", menu);
+}
 
 int input(char *buffer, char* prompt_s, int max_size, int echo)
 {

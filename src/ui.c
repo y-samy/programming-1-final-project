@@ -1,20 +1,8 @@
 #include "ui.h"
-#include "libui/io.h"
-#include "login.h"
+#include <libui/io.h>
+#include <login.h>
 #include <stdlib.h>
 #include <stdio.h>
-
-
-#define MENU_ROOT\
- "Welcome to the hotel's reservation system.\n"\
- "------------------------------------------\n\n"\
- "[1] LOGIN\n"\
- "[*] EXIT\n\n\n\n\n\n"\
- "Manual\n"\
- "------\n"\
- "Press [KEY] to choose an option\n"\
- "Press [Ctrl] + [C] at any time to exit the program\n"\
- "Some menus will allow you to press " PROMPT_CANCEL_KEY_S " to go back one step\n"
 
 
 #define MENU_LOGIN\
@@ -38,11 +26,7 @@
  "[ESC] Sign Out\n"\
  "[*] Exit\n"
 
-void display_menu(char *menu)
-{
-    clear_screen();
-    printf("%s", menu);
-}
+
 
 void main_menu(user_t user)
 {
@@ -73,19 +57,7 @@ void main_menu(user_t user)
     }
 }
 
-void root_menu(void)
-{
-    char choice[2];
-    while (1) {
-        display_menu(MENU_ROOT);
-        if (input(choice, "", 2, ECHO_OFF) != EXIT_SUCCESS)
-            break;
-        if (choice[0] == '1')
-            login_menu();
-        else if (choice[0] == '*')
-            exit(EXIT_SUCCESS);
-    }
-}
+
 
 void login_menu(void)
 {
@@ -124,5 +96,4 @@ void login_menu(void)
             input_attempts++;
         } while (!input_valid && input_attempts < PASSWORD_ATTEMPTS);
     }
-    main_menu(user);
 }
