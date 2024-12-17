@@ -10,10 +10,13 @@ void display_menu(char *menu)
     printf("%s", menu);
 }
 
-int input(char *buffer, char* prompt_s, int max_size, int echo)
+int input(char *buffer, char *prompt_s, int max_size, int input_type)
 {
     printf("%s", prompt_s);
     fflush(stdout);
+    int echo = ECHO;
+    if (input_type == INPUT_PASSWORD)
+        echo = ECHO_OFF;
     /* Turn cursor off if ECHO_OFF */
     if (echo != ECHO_OFF)
         printf(CARET_RESET);
@@ -23,22 +26,89 @@ int input(char *buffer, char* prompt_s, int max_size, int echo)
     termios_echo(false);
 #endif
 
-    int i;
+    int i = 0;
     char c;
-    for (i = 0; i < max_size - 1; ) {
-
+    bool input_valid = false;
+    int floating_point_i = -1;
+    int email_at_i = -1;
+    int email_dot_i = -1;
+    bool email_complete = false;
+    while (true) {
         c = get_key(); /* does not print what you type */
         if (c == ESC_KEY)
             return IO_STATUS_ESC;
         if (c == EOF || c == CTRL_C_KEY)
             exit(ABRUPT_EXIT);
-        if ((c == '\n' || c == '\r') && i > 0)
+        if ((c == '\n' || c == '\r') && i > 0) {
+            if (input_type == INPUT_EMAIL && !email_complete)
+                continue;
             break;
-        if ((c == BACKSPACE_KEY || c == DEL_KEY) && i > 0) { /* Backspace simulation */
-                printf("\b \b");
-                i--;
         }
-        if (c > 32 && c < 129 && i != max_size - 2) { /* Echo handling */
+        if ((c == BACKSPACE_KEY || c == DEL_KEY) && i > 0) {
+            /* Backspace simulation */
+            printf("\b \b");
+            i--;
+            if (i == floating_point_i)
+                floating_point_i = -1;
+            if (i == email_at_i)
+                email_at_i = -1;
+            if (i == email_dot_i)
+                email_dot_i = -1;
+        }
+        input_valid = false;
+        if (i != max_size - 2) {
+            switch (input_type) {
+                case INPUT_ANY:
+                    input_valid = (c >= ' ' && c < 128);
+                    break;
+                case INPUT_USERNAME:
+                case INPUT_PASSWORD:
+                    input_valid = (c > ' ' && c < 128);
+                    break;
+                case INPUT_INT_POSITIVE:
+                    input_valid = (c >= '0' && c <= '9');
+                    break;
+                case INPUT_INT_ANY:
+                    input_valid = (i == 0 && c == '-') || (c >= '0' && c <= '9');
+                    break;
+                case INPUT_ALPHANUMERIC:
+                    input_valid = (c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+                    break;
+                case INPUT_ALPHABETICAL:
+                    input_valid = (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+                    break;
+                case INPUT_FLOAT_ANY:
+                    if (c == '.' && floating_point_i == -1) {
+                        floating_point_i = i;
+                        input_valid = true;
+                    } else
+                        input_valid = (i == 0 && c == '-') || (c >= '0' && c <= '9');
+                    break;
+                case INPUT_FLOAT_POSITIVE:
+                    if (c == '.' && floating_point_i == -1) {
+                        floating_point_i = i;
+                        input_valid = true;
+                    } else
+                        input_valid = (c >= '0' && c <= '9');
+                    break;
+                case INPUT_EMAIL:
+                    if (c == '@' && email_at_i == -1 && i) {
+                        email_at_i = i;
+                        input_valid = true;
+                    } else if (c == '.' && buffer[i - 1] != '.' && i) {
+                        if (email_at_i != -1 && email_dot_i == -1)
+                            email_dot_i = i;
+                        email_complete = false;
+                        input_valid = true;
+                    } else {
+                        input_valid = (c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+                        email_complete = email_dot_i != -1 && email_at_i != -1;
+                    }
+                    break;
+            }
+        }
+        if (input_valid) {
+            /* Echo handling */
             if (echo == ECHO)
                 putchar(c);
             else if (echo == ECHO_MASK) /* Password hiding */
@@ -73,7 +143,7 @@ int choices(char *choices)
     }
     char *_choices_s = malloc(sizeof(char) * (i + 1));
     strcpy(_choices_s, choices);
-    char **choice_i = malloc(sizeof(char*) * choice_count);
+    char **choice_i = malloc(sizeof(char *) * choice_count);
     char *_token = NULL;
     _token = strtok(_choices_s, "\n");
     i = 0;
@@ -89,10 +159,12 @@ int choices(char *choices)
     char c;
     while (1) {
         c = get_key();
-        if (c == ESC_KEY){
-            #ifdef __unix__
+        if (c == ESC_KEY) {
+#ifdef __unix__
     termios_echo(true);
 #endif
+            free(_choices_s);
+            free(choice_i);
             return IO_STATUS_ESC;
         }
         if (c == EOF || c == CTRL_C_KEY)
@@ -106,10 +178,12 @@ int choices(char *choices)
             return current_choice;
         }
         if (c == ARR_UP_KEY && current_choice > 1) {
-            printf(CLEAR_LN CLR_RESET "%s" CUR_UP CLEAR_LN CLR_BG_YLW ">%s" CLR_RESET, choice_i[current_choice-1], choice_i[current_choice - 2]);
+            printf(CLEAR_LN CLR_RESET "%s" CUR_UP CLEAR_LN CLR_BG_YLW ">%s" CLR_RESET, choice_i[current_choice - 1],
+                   choice_i[current_choice - 2]);
             current_choice--;
         } else if (c == ARR_DOWN_KEY && current_choice < choice_count) {
-            printf(CLEAR_LN CLR_RESET "%s" CUR_DOWN CLEAR_LN CLR_BG_YLW ">%s" CLR_RESET, choice_i[current_choice-1], choice_i[current_choice]);
+            printf(CLEAR_LN CLR_RESET "%s" CUR_DOWN CLEAR_LN CLR_BG_YLW ">%s" CLR_RESET, choice_i[current_choice - 1],
+                   choice_i[current_choice]);
             current_choice++;
         }
     }

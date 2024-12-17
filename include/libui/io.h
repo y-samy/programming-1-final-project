@@ -6,6 +6,16 @@
 #define EXIT_SUCCESS 0
 
 
+#define INPUT_ANY 0
+#define INPUT_USERNAME 1
+#define INPUT_PASSWORD 2
+#define INPUT_ALPHANUMERIC 3
+#define INPUT_ALPHABETICAL 4
+#define INPUT_INT_POSITIVE 5
+#define INPUT_INT_ANY 6
+#define INPUT_FLOAT_POSITIVE 7
+#define INPUT_FLOAT_ANY 8
+#define INPUT_EMAIL 9
 
 #define ECHO 1
 #define ECHO_OFF 0
@@ -21,7 +31,7 @@
 #endif
 
 
-int input(char *buffer, char *prompt_s, int max_size, int echo);
+int input(char *buffer, char *prompt_s, int max_size, int input_type);
 int choices(char *choices);
 void display_menu(char *menu);
 void clear_screen(void);

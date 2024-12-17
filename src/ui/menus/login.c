@@ -16,7 +16,7 @@ int login_menu(user_t *user)
         bool input_valid = false;
         int input_attempts = 0;
         do {
-            if (input(username,  CLEAR_LN "Username: ", USERNAME_LEN, ECHO) == IO_STATUS_ESC)
+            if (input(username,  CLEAR_LN "Username: ", USERNAME_LEN, INPUT_USERNAME) == IO_STATUS_ESC)
                 return;
             if (!(input_valid = verify_username(user, username))) {
                 printf(
@@ -29,7 +29,7 @@ int login_menu(user_t *user)
         input_valid = false;
         input_attempts = 0;
         do {
-            if (input(password, CLEAR_LN "Password: ", PASSWORD_LEN, ECHO_MASK) != EXIT_SUCCESS)
+            if (input(password, CLEAR_LN "Password: ", PASSWORD_LEN, INPUT_PASSWORD) != EXIT_SUCCESS)
                 break; /* using break; instead of return; to reprompt for password when ESC is pressed */
             if (!(input_valid = verify_password(user, password))) {
                 printf(CUR_DOWN CLEAR_LN CLR_BG_YLW "Incorrect password! %d of %d attempts." CLR_RESET CUR_UP "\r", input_attempts + 1, PASSWORD_ATTEMPTS);
