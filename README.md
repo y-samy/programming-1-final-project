@@ -4,9 +4,13 @@ A hotel reservation system with a plaintext csv-like database server made in C.
 
 ## Contributors
 [David Michael](https://github.com/davidyassa)
+
 [Mina Youssef](https://github.com/minawashere)
+
 [Adham Gaweesh](https://github.com/CosmicBreadCat)
+
 [Mohamed Ashraf](https://github.com/mashraf282)
+
 [Youssef Samy](https://github.com/y-samy)
 
 
