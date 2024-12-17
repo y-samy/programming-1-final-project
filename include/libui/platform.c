@@ -24,9 +24,11 @@ int get_key(void)
                 c = ESC_KEY;
                 break;
             case ARR_UP_EC:
+            case ARR_LEFT_EC:
                 c = ARR_UP_KEY;
                 break;
             case ARR_DOWN_EC:
+            case ARR_RIGHT_EC:
                 c = ARR_DOWN_KEY;
                 break;
             default:
@@ -87,9 +89,11 @@ int get_key(void)
             c = getchar();
             switch (c) {
                 case ARR_UP_EC:
+                    case ARR_LEFT_EC:
                     c = ARR_UP_KEY;
                 break;
                 case ARR_DOWN_EC:
+                    case ARR_RIGHT_EC:
                     c = ARR_DOWN_KEY;
                 break;
                 default:
@@ -99,12 +103,5 @@ int get_key(void)
     }
     return c;
 }
-
-#else
-
-#include <stdio.h>
-
-
-
 #endif
 #endif

@@ -23,9 +23,13 @@
 #ifdef _WIN32
 #define ARR_UP_EC 72
 #define ARR_DOWN_EC 80
+#define ARR_RIGHT_EC 77
+#define ARR_LEFT_EC 75
 #else
 #ifdef __unix__
 #define ARR_UP_EC 65
 #define ARR_DOWN_EC 66
+#define ARR_RIGHT_EC 67
+#define ARR_LEFT_EC 68
 #endif
 #endif
