@@ -15,10 +15,8 @@ int login_menu(user_t *user)
         char password[PASSWORD_LEN];
         bool input_valid = false;
         int input_attempts = 0;
-        char prompt[50];
         do {
-            sprintf(prompt, "%sUsername: ", CLEAR_LN);
-            if (input(username, prompt, USERNAME_LEN, ECHO) == IO_STATUS_ESC)
+            if (input(username,  CLEAR_LN "Username: ", USERNAME_LEN, ECHO) == IO_STATUS_ESC)
                 return;
             if (!(input_valid = verify_username(user, username))) {
                 printf(
@@ -31,14 +29,10 @@ int login_menu(user_t *user)
         input_valid = false;
         input_attempts = 0;
         do {
-            if (!input_attempts)
-                sprintf(prompt, "%sPassword: ", CLEAR_LN);
-            else
-                sprintf(prompt, "%sPassword (%d attempts): ", CLEAR_LN, input_attempts);
-            if (input(password, prompt, PASSWORD_LEN, ECHO_MASK) != EXIT_SUCCESS)
+            if (input(password, CLEAR_LN "Password: ", PASSWORD_LEN, ECHO_MASK) != EXIT_SUCCESS)
                 break; /* using break; instead of return; to reprompt for password when ESC is pressed */
-            if (!(input_valid = verify_password(user, password)) && !input_attempts) {
-                printf(CUR_DOWN CLEAR_LN CLR_BG_YLW "Incorrect password!" CLR_RESET CUR_UP "\r");
+            if (!(input_valid = verify_password(user, password))) {
+                printf(CUR_DOWN CLEAR_LN CLR_BG_YLW "Incorrect password! %d of %d attempts." CLR_RESET CUR_UP "\r", input_attempts + 1, PASSWORD_ATTEMPTS);
             }
             input_attempts++;
         } while (!input_valid && input_attempts < PASSWORD_ATTEMPTS);
