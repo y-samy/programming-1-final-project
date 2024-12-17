@@ -38,7 +38,7 @@ int input(char *buffer, char* prompt_s, int max_size, int echo)
                 printf("\b \b");
                 i--;
         }
-        if (c > 32 && c < 129) { /* Echo handling */
+        if (c > 32 && c < 129 && i != max_size - 2) { /* Echo handling */
             if (echo == ECHO)
                 putchar(c);
             else if (echo == ECHO_MASK) /* Password hiding */
