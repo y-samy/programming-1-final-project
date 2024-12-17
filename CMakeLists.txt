@@ -2,11 +2,11 @@ cmake_minimum_required(VERSION 3.16)
 project(hotel C)
 
 set(CMAKE_C_STANDARD 90)
-include_directories(include src/ui)
+include_directories(include src/ui src/hotel)
 
 add_executable(hotel src/main.c
-        include/auth/login.c
-        include/auth/login.h
+        src/hotel/auth/login.c
+        src/hotel/auth/login.h
         include/libui/platform.c
         include/libui/platform.h
         include/libui/io.c

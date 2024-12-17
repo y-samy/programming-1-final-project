@@ -16,7 +16,7 @@ int input(char *buffer, char *prompt_s, int max_size, int input_type)
     fflush(stdout);
     int echo = ECHO;
     if (input_type == INPUT_PASSWORD)
-        echo = ECHO_OFF;
+        echo = ECHO_MASK;
     /* Turn cursor off if ECHO_OFF */
     if (echo != ECHO_OFF)
         printf(CARET_RESET);
