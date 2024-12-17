@@ -19,6 +19,7 @@ struct Reservation{
     int mobile;
     };
 int get_date(date *check_in_date,char chdate[DATE_SIZE]);
+/*
 int main()
 {
 #define NUM_OF_DATES 5
@@ -39,7 +40,7 @@ int main()
     }
     return 0;
 }
-
+*/
 int get_date(date *check_in_date,char chdate[DATE_SIZE])
 {
     fgets(chdate,12,stdin);
