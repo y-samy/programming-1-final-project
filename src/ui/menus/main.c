@@ -25,9 +25,9 @@
 
 int main_menu(void)
 {
-    display_menu(MENU_MAIN);
     char choice;
     while (1) {
+        display_menu(MENU_MAIN);
         choice = choices(MENU_MAIN_CHOICES);
         if (choice == IO_STATUS_ESC)
             break;
