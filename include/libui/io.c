@@ -92,7 +92,7 @@ int input(char *buffer, char *prompt_s, int max_size, int input_type)
                         input_valid = (c >= '0' && c <= '9');
                     break;
                 case INPUT_EMAIL:
-                    if (c == '@' && email_at_i == -1 && i) {
+                    if (c == '@' && email_at_i == -1 && i && buffer[i-1] != '.') {
                         email_at_i = i;
                         input_valid = true;
                     } else if (c == '.' && buffer[i - 1] != '.' && i && buffer[i-1] != '@') {
