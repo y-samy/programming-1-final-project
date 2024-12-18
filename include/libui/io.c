@@ -95,7 +95,7 @@ int input(char *buffer, char *prompt_s, int max_size, int input_type)
                     if (c == '@' && email_at_i == -1 && i) {
                         email_at_i = i;
                         input_valid = true;
-                    } else if (c == '.' && buffer[i - 1] != '.' && i) {
+                    } else if (c == '.' && buffer[i - 1] != '.' && i && buffer[i-1] != '@') {
                         if (email_at_i != -1 && email_dot_i == -1)
                             email_dot_i = i;
                         email_complete = false;
