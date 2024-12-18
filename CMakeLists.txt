@@ -19,4 +19,6 @@ add_executable(hotel src/main.c
         src/ui/menus/login.c
         src/ui/menus/login.h
         src/ui/ui.h
+        src/hotel/management.c
+        src/hotel/management.h
 )
