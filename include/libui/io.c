@@ -32,7 +32,6 @@ int input(char *buffer, char *prompt_s, int max_size, int input_type)
     int floating_point_i = -1;
     int email_at_i = -1;
     int email_dot_i = -1;
-    bool email_complete = false;
     while (true) {
         c = get_key(); /* does not print what you type */
         if (c == ESC_KEY)
@@ -40,7 +39,7 @@ int input(char *buffer, char *prompt_s, int max_size, int input_type)
         if (c == EOF || c == CTRL_C_KEY)
             exit(ABRUPT_EXIT);
         if ((c == '\n' || c == '\r') && i > 0) {
-            if (input_type == INPUT_EMAIL && !email_complete)
+            if (input_type == INPUT_EMAIL && (email_at_i == -1 || email_dot_i == -1 || buffer[i-1] == '@' || buffer[i-1] == '.' || buffer[i-2] == '.'))
                 continue;
             break;
         }
@@ -98,11 +97,9 @@ int input(char *buffer, char *prompt_s, int max_size, int input_type)
                     } else if (c == '.' && buffer[i - 1] != '.' && i && buffer[i-1] != '@') {
                         if (email_at_i != -1 && email_dot_i == -1)
                             email_dot_i = i;
-                        email_complete = false;
                         input_valid = true;
                     } else {
                         input_valid = (c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
-                        email_complete = email_dot_i != -1 && email_at_i != -1 && buffer[i-1] != '.';
                     }
                     break;
             }
