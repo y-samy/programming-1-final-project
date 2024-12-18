@@ -57,7 +57,7 @@ int get_date(date *check_in_date,char chdate[DATE_SIZE])
     int leap = ((y%4==0 || y%100!=0) ||(y%400==0));
     if (y<2024) return 0;
     if (m<1 || m>12) return 0;
-    if (y==2024 && m<=12 && d<=29) return 0; //current date el mona2sha
+    if (y==2024 && m<12 ||( y==2024 && m==12 && d<30)) return 0; //current date el mona2sha
     if (leap)
     {
         if (m==2)
