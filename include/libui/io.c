@@ -102,7 +102,7 @@ int input(char *buffer, char *prompt_s, int max_size, int input_type)
                         input_valid = true;
                     } else {
                         input_valid = (c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
-                        email_complete = email_dot_i != -1 && email_at_i != -1;
+                        email_complete = email_dot_i != -1 && email_at_i != -1 && buffer[i-1] != '.';
                     }
                     break;
             }
