@@ -53,6 +53,7 @@ int input(char *buffer, char *prompt_s, int max_size, int input_type)
                 email_at_i = -1;
             if (i == email_dot_i)
                 email_dot_i = -1;
+            continue;
         }
         input_valid = false;
         if (i != max_size - 2) {
