@@ -36,7 +36,9 @@ int main_menu(void)
             case 2:
             case 3:
             case 4:
-            case 5:
+                continue;
+            case 5: display_5();
+                break;
             case 6:
             case 7:
             case 8:
@@ -52,4 +54,10 @@ int main_menu(void)
                 continue;
         }
     }
+}
+
+void display_5(void)
+{
+    roomAvailability(0);
+    choices("Back\nExit\n");
 }
