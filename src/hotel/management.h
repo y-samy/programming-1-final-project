@@ -13,7 +13,7 @@ typedef struct
 typedef struct 
 {
     int room_id;
-    char avaliablity[11];
+    char availability[11];
     char view[16];
     int price;
 } room_t;
