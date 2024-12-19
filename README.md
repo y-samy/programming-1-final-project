@@ -1,6 +1,22 @@
 # Programming 1 Final Project [December 2024]
 
-A hotel reservation system with a plaintext csv-like database server made in C.
+A basic hotel reservation system made purely in C with the help of standard libraries and our own `libui` non-`ncurses` library for the _user_ input/ output.
+
+## Repo Structure
+| Item | Purpose |
+|------|---------|
+| `src/` | hotel-specific files |
+| `include/` | our libraries that can be used in other projects |
+| `CMakeLists.txt` | compilation helper with CMake |
+| `.devcontainers` | barebones devcontainer for use in GitHub CodeSpaces |
+
+## Project Details
+
+**Instructions & Givens**
+- All database files will be given and guaranteed to be valid.
+
+**Technical Details**
+- All user input will be validated as it is being typed, and verified after it is entered.
 
 ## Contributors
 [David Michael](https://github.com/davidyassa)
@@ -36,7 +52,9 @@ As much of the code as possible should be in ASCII, and most of the elements of 
 | struct, union | `TitleCase` |
 
 #### Structures
-Do **NOT** `typedef` a `struct` (at least not without somehow abstracting away its initialization process).
+**ONLY** `typedef` a `struct` **IF YOU WILL ABSTRACT AWAY ALL ACCESS TO ITS MEMBERS WITH (SETTERS/ GETTERS)-LIKE FUNCTIONS**.
+General example: `stdio.h`'s `FILE` and its functions (`fopen()`, `fgets()`, etc)
+In-code example: `login.h`'s `user_t` and its functions (`user_session()`, `is_loggedin()`, etc)
 
 #### Type Indication
 For identifiers with an ambiguous type, you should add a postfix indicating the type. For example:
