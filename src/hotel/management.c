@@ -18,7 +18,9 @@ customer_t* loadReservation(void)
 
 int loadRooms(room_t roomList[100])
 {
-    int i,roomCount=0;
+    int i;
+    static int roomCount=0;
+    if (roomCount) return roomCount;
     FILE* f = fopen("Rooms.txt","r");
     for(i=0; !feof(f) ;i++){
         int scan = fscanf(f,"%d %10s %15s %d",&roomList[i].room_id,roomList[i].availability,roomList[i].view,&roomList[i].price);
@@ -30,7 +32,7 @@ int loadRooms(room_t roomList[100])
 void roomAvailability(int option) //option is either 0 for all rooms or //1 for avilable rooms or //-1 for reserved rooms
 {
     clear_screen();
-    room_t rooms[100];
+    static room_t rooms[100];
     int n = loadRooms(rooms);
     int i,j;
     char av[]="Available",re[]="Reserved";

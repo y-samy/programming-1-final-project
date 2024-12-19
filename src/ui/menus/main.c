@@ -59,7 +59,5 @@ int main_menu(void)
 void display_5(void)
 {
     roomAvailability(0);
-    char c[1];
-    printf("Back");
-    choices(c);
+    choices("Back\nExit\n");
 }
