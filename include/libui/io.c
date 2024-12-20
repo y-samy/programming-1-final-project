@@ -31,13 +31,13 @@ int input_date(struct tm *date)
         temp_date = *date;
         switch (current_choice) {
             case 0:
-                printf(CLEAR_LN CLR_BG_YLW CLR_TEXT_BLACK "%02d" CLR_RESET " / %s / %d", date->tm_mday, month_names[date->tm_mon], date->tm_year + 1900);
+                printf(CLEAR_LN SELECTION_HIGHLIGHT "%02d" CLR_RESET " / %s / %d", date->tm_mday, month_names[date->tm_mon], date->tm_year + 1900);
             break;
             case 1:
-                printf(CLEAR_LN "%02d / " CLR_BG_YLW  CLR_TEXT_BLACK "%s" CLR_RESET " / %d", date->tm_mday, month_names[date->tm_mon], date->tm_year + 1900);
+                printf(CLEAR_LN "%02d / " SELECTION_HIGHLIGHT "%s" CLR_RESET " / %d", date->tm_mday, month_names[date->tm_mon], date->tm_year + 1900);
             break;
             case 2:
-                printf(CLEAR_LN "%02d / %s / " CLR_BG_YLW CLR_TEXT_BLACK "%d" CLR_RESET, date->tm_mday, month_names[date->tm_mon], date->tm_year + 1900);
+                printf(CLEAR_LN "%02d / %s / " SELECTION_HIGHLIGHT "%d" CLR_RESET, date->tm_mday, month_names[date->tm_mon], date->tm_year + 1900);
             break;
 
         }
@@ -234,7 +234,7 @@ int choices(char *choices)
         choice_i[i++] = _token;
         _token = strtok(NULL, "\n");
     }
-    printf(CLR_BG_YLW ">%s\n" CLR_RESET, choice_i[0]);
+    printf(SELECTION_HIGHLIGHT ">%s\n" CLR_RESET, choice_i[0]);
     for (i = 1; i < choice_count; ++i) {
         printf("%s\n", choice_i[i]);
     }
@@ -261,11 +261,11 @@ int choices(char *choices)
             return current_choice;
         }
         if (c == ARR_UP_KEY && current_choice > 1) {
-            printf(CLEAR_LN CLR_RESET "%s" CUR_UP CLEAR_LN CLR_BG_YLW ">%s" CLR_RESET, choice_i[current_choice - 1],
+            printf(CLEAR_LN CLR_RESET "%s" CUR_UP CLEAR_LN SELECTION_HIGHLIGHT ">%s" CLR_RESET, choice_i[current_choice - 1],
                    choice_i[current_choice - 2]);
             current_choice--;
         } else if (c == ARR_DOWN_KEY && current_choice < choice_count) {
-            printf(CLEAR_LN CLR_RESET "%s" CUR_DOWN CLEAR_LN CLR_BG_YLW ">%s" CLR_RESET, choice_i[current_choice - 1],
+            printf(CLEAR_LN CLR_RESET "%s" CUR_DOWN CLEAR_LN SELECTION_HIGHLIGHT ">%s" CLR_RESET, choice_i[current_choice - 1],
                    choice_i[current_choice]);
             current_choice++;
         }
