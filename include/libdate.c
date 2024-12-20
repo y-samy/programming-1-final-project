@@ -34,7 +34,8 @@ int get_date(date_t *check_in_date,char chdate[DATE_SIZE])
     char delim[1]= "-";
     void *DMY = strtok(chdate,delim);
     int d,m,y;
-    for (int i = 0; i < 3; i++)
+    int i;
+    for (i = 0; i < 3; i++)
     {
         if (i==0) d = atoi(DMY);
         if (i==1) m = atoi(DMY);
