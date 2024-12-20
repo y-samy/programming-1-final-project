@@ -3,6 +3,7 @@
 #include <auth/login.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <management.h>
 
 
 #define MENU_MAIN \

@@ -1,5 +1,0 @@
-1001 Available SeaView 2000
-1002 Available GardenView 1600
-1124 Reserved SeaView 2200
-1130 Available LakeView 1800
-1133 Reserved LakeView 1800

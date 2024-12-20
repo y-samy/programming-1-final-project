@@ -27,4 +27,10 @@ add_executable(hotel src/main.c
         src/hotel/management/reservations.h
         include/libdate.c
         include/libdate.h
+        src/hotel/management.c
+        src/hotel/management.h
+        src/ui/menus/reservation.c
+        src/ui/menus/reservation.h
+
+
 )
