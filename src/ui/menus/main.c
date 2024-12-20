@@ -1,10 +1,6 @@
 #include "ui.h"
 #include <libui/io.h>
-#include <auth/login.h>
 #include <stdlib.h>
-#include <stdio.h>
-#include <management.h>
-
 
 #define MENU_MAIN \
 "MAIN MENU\n"\

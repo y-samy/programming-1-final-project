@@ -39,7 +39,7 @@ reservation_t* loadReservation(void)
 
         fscanf(f_reservation,"%d,%d,",
            &reservations[i].reservation_id,
-           &reservations[i].room.room_id
+           &reservations[i].room.id
            );
 
         fscanf(f_reservation, "%19s,", temp);
@@ -62,6 +62,7 @@ reservation_t* loadReservation(void)
     }
 
     fclose(f_reservation);
+    return reservations;
 }
 
 
