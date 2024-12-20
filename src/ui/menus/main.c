@@ -2,11 +2,11 @@
 #include <libui/io.h>
 #include <stdlib.h>
 
-#define MENU_MAIN \
+#define MENU_STATIC \
 "MAIN MENU\n"\
 "---------\n\n"
 
-#define MENU_MAIN_CHOICES \
+#define MENU_CHOICES \
 "Reserve a Room\n"\
 "Check-in\n"\
 "Cancel Reservation\n"\
@@ -24,8 +24,8 @@ int main_menu(void)
 {
     char choice;
     while (1) {
-        display_menu(MENU_MAIN);
-        choice = choices(MENU_MAIN_CHOICES);
+        display_menu(MENU_STATIC);
+        choice = choices(MENU_CHOICES);
         if (choice == IO_STATUS_ESC)
             MAIN_M_CHOICE_LOGOUT;
         if (choice == 11)
