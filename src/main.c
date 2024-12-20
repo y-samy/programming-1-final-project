@@ -20,6 +20,8 @@ int main()
             logout(&user);
             continue;
         }
+        if (menu_choice = 1)
+            reserve_room();
         if (menu_choice == 5) {
             availability_menu(rooms, room_count);
         }

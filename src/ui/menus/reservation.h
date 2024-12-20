@@ -1,6 +1,3 @@
-#ifndef RESERVATION_H
-#define RESERVATION_H
+#pragma once
 
-
-
-#endif //RESERVATION_H
+int reserve_room();
