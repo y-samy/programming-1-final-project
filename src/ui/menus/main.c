@@ -30,28 +30,10 @@ int main_menu(void)
         display_menu(MENU_MAIN);
         choice = choices(MENU_MAIN_CHOICES);
         if (choice == IO_STATUS_ESC)
-            break;
-        switch (choice) {
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-                continue;
-            case 5: display_5();
-            break;
-            case 6:
-            case 7:
-            case 8:
-            case 9:
-                continue;
-            case 10:
-            case IO_STATUS_ESC:
-                return MAIN_M_CHOICE_LOGOUT;
-            return;
-            case 11:
-                exit(0);
-            default:
-                continue;
-        }
+            MAIN_M_CHOICE_LOGOUT;
+        if (choice == 11)
+            exit(0);
+        return choice;
     }
 }
+
