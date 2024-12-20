@@ -19,6 +19,7 @@ int input_date(struct tm *date)
 #ifdef __unix__
     termios_echo(false);
 #endif
+    printf(CARET_HIDE);
     struct tm current_date = get_current_date();
     current_date.tm_sec = current_date.tm_hour = current_date.tm_min = 0;
     *date = current_date;
@@ -89,6 +90,8 @@ int input_date(struct tm *date)
 #ifdef __unix__
     termios_echo(true);
 #endif
+    printf(CARET_RESET);
+    return 0;
 }
 
 int input(char *buffer, char *prompt_s, int max_size, int input_type)

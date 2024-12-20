@@ -21,6 +21,8 @@
 
 #define ARR_UP_KEY -'A'
 #define ARR_DOWN_KEY -'B'
+#define ARR_LEFT_KEY -'C'
+#define ARR_RIGHT_KEY -'D'
 
 #ifdef _WIN32
 #define ARR_UP_EC 72
