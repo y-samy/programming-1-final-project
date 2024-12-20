@@ -1,91 +1,130 @@
 #include "rooms.h"
-#include <libui/charcodes.h>
-#include <libui/io.h>
 #include <stdio.h>
 #include <string.h>
 
-customer_t* loadReservation(void)
+size_t room_count(bool reset) /* private */
 {
-    customer_t customerList[100];
-   FILE* f=fopen("Reservation.txt","r");
-   while(!feof(f)){
-    int i=0;
-   fscanf(f,"%d,%d,%19s,%d,%99s,%d,%12s,%99s,%d",&customerList[i].reservationId,&customerList[i].roomId,customerList[i].checkinStatus,customerList[i].name,&customerList[i].nationalId,customerList[i].date,customerList[i].email,&customerList[i].phoneNum);
-   i++;
-   }
-   fclose(f);
-} 
-
-int loadRooms(room_t roomList[100])
-{
-    int i;
-    static int roomCount=0;
-    if (roomCount) return roomCount;
-    FILE* f = fopen("Rooms.txt","r");
-    for(i=0; !feof(f) ;i++){
-        int scan = fscanf(f,"%d %10s %15s %d",&roomList[i].room_id,roomList[i].availability,roomList[i].view,&roomList[i].price);
-        if (scan==4) roomCount++;
+    static size_t count = 0;
+    if (reset) {
+        /* reset */
+        count = 0;
+        return count;
     }
-    fclose(f);
-    return roomCount;
+    if (count)
+        return count;
+    char c, prev_c = 0;
+    FILE *rooms_file = fopen(ROOM_FILE_NAME, "r");
+    while(1){
+        c = fgetc(rooms_file);
+        if (c == EOF) {
+            if (prev_c != '\n')
+                count++;
+            break;
+        }
+        if (c == '\n')
+            count++;
+        prev_c = c;
+    }
+    fclose(rooms_file);
+    return count;
 }
 
-void roomAvailability(int option) //option is either 0 for all rooms or //1 for avilable rooms or //-1 for reserved rooms
+size_t get_room_count(void)
 {
-    clear_screen();
-    static room_t rooms[100];
-    int n = loadRooms(rooms);
-    int i,j;
-    char av[]="Available",re[]="Reserved";
-    if (option==0)//print all rooms and their availability (sorted)
-    {
-        for (i=0; i<2 ;i++)
-        {
-            if (!i)
-            {
-                printf(CLR_BG_GREEN "\nAvailable Rooms:\n" CLR_RESET);
-                for (j=0;j<n;j++)
-                {
-                    if(!strcmp(rooms[j].availability,av))
-                    {
-                        printf("%d %15s %d\n",rooms[j].room_id,rooms[j].view,rooms[j].price);
-                    }
-                }
-            }    
-            else
-            { 
-                printf(CLR_BG_RED "Reserved Rooms:\n" CLR_RESET);
-                for (j=0;j<n;j++)
-                {
-                    if(!strcmp(rooms[j].availability,re))
-                    {
-                        printf("%d %15s %d\n",rooms[j].room_id,rooms[j].view,rooms[j].price);
-                    }
-                }
-            }                
-        }
+    return room_count(false);
+}
+
+room_t *get_room_list(size_t room_count, bool reset)
+{
+    static room_t *rooms_list = NULL;
+    if (reset) {
+        free(rooms_list);
+        return NULL;
     }
-    else if (option == 1)
-    {
-        printf(CLR_TEXT_GREEN " Available Rooms:\n" CLR_RESET);
-        for (j=0;j<n;j++)
-        {   
-            if(!strcmp(rooms[j].availability,av))
-            {
-                printf("%d %15s %d\n",rooms[j].room_id,rooms[j].view,rooms[j].price);
-            }
-        }
+    if (rooms_list)
+        return rooms_list;
+    rooms_list = malloc(room_count * sizeof(room_t));
+    FILE *rooms_file = fopen(ROOM_FILE_NAME, "r");
+    size_t i;
+    char avail_buffer[10];
+    char room_category_buffer[11];
+    for (i = 0; i < room_count; i++) {
+        fscanf(rooms_file, "%d %9s %10s %d", &rooms_list[i].id, avail_buffer, room_category_buffer,
+               &rooms_list[i].price);
+        if (!strcmp(avail_buffer, "Available"))
+            rooms_list[i].is_available = true;
+        else
+            rooms_list[i].is_available = false;
+        if (!strcmp(room_category_buffer, "SeaView"))
+            rooms_list[i].view_category = SeaView;
+        if (!strcmp(room_category_buffer, "LakeView"))
+            rooms_list[i].view_category = LakeView;
+        if (!strcmp(room_category_buffer, "GardenView"))
+            rooms_list[i].view_category = GardenView;
     }
-    else
-    {
-        printf(CLR_TEXT_RED " Reserved Rooms:\n" CLR_RESET);
-        for (j=0;j<n;j++)
-        {
-            if(!strcmp(rooms[j].availability,re))
-            {
-                printf("%d %15s %d\n",rooms[j].room_id,rooms[j].view,rooms[j].price);
-            }
-        }
+    fclose(rooms_file);
+    return rooms_list;
+}
+
+room_t *load_rooms(void)
+{
+    return get_room_list(room_count(false), false);
+}
+
+void save_and_unload_rooms(void)
+{
+    FILE *rooms_file = fopen(ROOM_FILE_NAME, "w");
+    size_t count = room_count(false);
+    room_t *rooms_list = get_room_list(count, false);
+    size_t i;
+    for (i = 0; i < count; i++) {
+        fprintf(rooms_file, "%d %s %s %d", get_room_id(rooms_list + i), get_availability_s(rooms_list + i),
+                get_view_s(rooms_list + i), get_price(rooms_list + i));
     }
-    //printf("Back\n");
+    fclose(rooms_file);
+}
+
+bool is_available(room_t *room)
+{
+    return room->is_available;
+}
+
+char *get_availability_s(room_t *room)
+{
+    return room->is_available ? "Available" : "Unavailable";
+}
+
+int get_price(room_t *room)
+{
+    return room->price;
+}
+
+room_view_t get_view(room_t *room)
+{
+    return room->view_category;
+}
+
+char *get_view_s(room_t *room)
+{
+    switch (room->view_category) {
+        case SeaView:
+            return "SeaView";
+            break;
+        case LakeView:
+            return "LakeView";
+            break;
+        case GardenView:
+            return "GardenView";
+            break;
+    }
+}
+
+int get_room_id(room_t *room)
+{
+    return room->id;
+}
+
+void set_available(room_t *room, bool available)
+{
+    room->is_available = available;
 }

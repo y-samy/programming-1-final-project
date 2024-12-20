@@ -13,11 +13,18 @@ size_t get_user_count(bool reset)
     }
     if (count)
         return count;
-    int c;
+    char c, prev_c = 0;
     FILE *users_file = fopen("users.txt", "r");
-    while ((c= fgetc(users_file)) != EOF) {
+    while(1){
+        c = fgetc(users_file);
+        if (c == EOF) {
+            if (prev_c != '\n')
+                count++;
+            break;
+        }
         if (c == '\n')
             count++;
+        prev_c = c;
     }
     fclose(users_file);
     return count;
