@@ -38,7 +38,7 @@ int main_menu(void)
             case 4:
                 continue;
             case 5: display_5();
-                break;
+            break;
             case 6:
             case 7:
             case 8:
@@ -47,17 +47,11 @@ int main_menu(void)
             case 10:
             case IO_STATUS_ESC:
                 return MAIN_M_CHOICE_LOGOUT;
-                return;
+            return;
             case 11:
                 exit(0);
             default:
                 continue;
         }
     }
-}
-
-void display_5(void)
-{
-    roomAvailability(0);
-    choices("Back\nExit\n");
 }

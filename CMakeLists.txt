@@ -19,6 +19,12 @@ add_executable(hotel src/main.c
         src/ui/menus/login.c
         src/ui/menus/login.h
         src/ui/ui.h
-        src/hotel/management.c
-        src/hotel/management.h
+        src/ui/menus/availability.c
+        src/ui/menus/availability.h
+        src/hotel/management/rooms.c
+        src/hotel/management/rooms.h
+        src/hotel/management/reservations.c
+        src/hotel/management/reservations.h
+        include/libdate.c
+        include/libdate.h
 )
