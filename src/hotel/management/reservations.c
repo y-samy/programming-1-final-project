@@ -50,9 +50,10 @@ reservation_t* loadReservation(void)
             &reservations[i].n_nights);
 
         fscanf(f_reservation,"%2d-%2d-%4d,",
-            &reservations[i].date.day,
-            &reservations[i].date.month,
-            &reservations[i].date.year);
+            &reservations[i].date.tm_mday,
+            &reservations[i].date.tm_mon,
+            &reservations[i].date.tm_year)
+        ;
 
         fscanf(f_reservation, "%99s, %14s",
            reservations[i].customer.email,

@@ -160,7 +160,7 @@ int input(char *buffer, char *prompt_s, int max_size, int input_type)
                     input_valid = (c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
                     break;
                 case INPUT_ALPHABETICAL:
-                    input_valid = (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+                    input_valid = (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c == ' ');
                     break;
                 case INPUT_FLOAT_ANY:
                     if (c == '.' && floating_point_i == -1) {

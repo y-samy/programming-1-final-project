@@ -9,6 +9,9 @@ add_executable(hotel src/main.c
         src/hotel/auth/login.h
         src/hotel/management/rooms.c
         src/hotel/management/rooms.h
+        src/hotel/management/reservations.c
+        src/hotel/management/reservations.h
+
 
         src/ui/menus/main.c
         src/ui/menus/main.h
