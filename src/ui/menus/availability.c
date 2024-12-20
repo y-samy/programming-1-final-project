@@ -22,5 +22,5 @@ int availability_menu(room_t *room_list, size_t count)
             printf("%d %15s %d\n", get_room_id(room_list + i), get_view_s(room_list+i), get_price(room_list+i));
         }
     }
-    choices("Back\nExit\n");
+    return choices("Back\nExit\n");
 }
