@@ -31,13 +31,13 @@ int input_date(struct tm *date)
         temp_date = *date;
         switch (current_choice) {
             case 0:
-                printf(CLEAR_LN CLR_BG_YLW "%02d" CLR_RESET " / %s / %d", date->tm_mday, month_names[date->tm_mon], date->tm_year + 1900);
+                printf(CLEAR_LN CLR_BG_YLW CLR_TEXT_BLACK "%02d" CLR_RESET " / %s / %d", date->tm_mday, month_names[date->tm_mon], date->tm_year + 1900);
             break;
             case 1:
-                printf(CLEAR_LN "%02d / " CLR_BG_YLW "%s" CLR_RESET " / %d", date->tm_mday, month_names[date->tm_mon], date->tm_year + 1900);
+                printf(CLEAR_LN "%02d / " CLR_BG_YLW  CLR_TEXT_BLACK "%s" CLR_RESET " / %d", date->tm_mday, month_names[date->tm_mon], date->tm_year + 1900);
             break;
             case 2:
-                printf(CLEAR_LN "%02d / %s / " CLR_BG_YLW "%d" CLR_RESET, date->tm_mday, month_names[date->tm_mon], date->tm_year + 1900);
+                printf(CLEAR_LN "%02d / %s / " CLR_BG_YLW CLR_TEXT_BLACK "%d" CLR_RESET, date->tm_mday, month_names[date->tm_mon], date->tm_year + 1900);
             break;
 
         }
@@ -83,8 +83,9 @@ int input_date(struct tm *date)
                 }
             break;
         }
-        if (difftime(mktime(&current_date), mktime(&temp_date)) <= 0)
-            *date = temp_date;
+        if (difftime(mktime(&current_date), mktime(&temp_date)) > 0 || temp_date.tm_year >  current_date.tm_year + 100)
+            continue;
+        *date = temp_date;
 
     }
 #ifdef __unix__
