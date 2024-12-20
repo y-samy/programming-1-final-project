@@ -24,12 +24,16 @@ int get_key(void)
                 c = ESC_KEY;
                 break;
             case ARR_UP_EC:
-            case ARR_LEFT_EC:
                 c = ARR_UP_KEY;
                 break;
+            case ARR_LEFT_EC:
+                c = ARR_LEFT_KEY;
+                break;
             case ARR_DOWN_EC:
-            case ARR_RIGHT_EC:
                 c = ARR_DOWN_KEY;
+                break;
+            case ARR_RIGHT_EC:
+                c = ARR_RIGHT_KEY;
                 break;
             default:
                 c = 0;
@@ -88,13 +92,20 @@ int get_key(void)
         {
             c = getchar();
             switch (c) {
+                case ESC_KEY:
+                    c = ESC_KEY;
+                break;
                 case ARR_UP_EC:
-                    case ARR_LEFT_EC:
                     c = ARR_UP_KEY;
                 break;
+                case ARR_LEFT_EC:
+                    c = ARR_LEFT_KEY;
+                break;
                 case ARR_DOWN_EC:
-                    case ARR_RIGHT_EC:
                     c = ARR_DOWN_KEY;
+                break;
+                case ARR_RIGHT_EC:
+                    c = ARR_RIGHT_KEY;
                 break;
                 default:
                     c = 0;

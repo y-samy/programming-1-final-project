@@ -9,6 +9,7 @@
 
 #define CLR_TEXT_RED "\033[31m"
 #define CLR_TEXT_GREEN "\033[32m"
+#define CLR_TEXT_BLACK "\033[30m"
 #define CLR_BG_RED "\033[41m"
 #define CLR_BG_GREEN "\033[42m"
 #define CLR_BG_YLW "\033[43m"
@@ -21,6 +22,8 @@
 
 #define ARR_UP_KEY -'A'
 #define ARR_DOWN_KEY -'B'
+#define ARR_LEFT_KEY -'C'
+#define ARR_RIGHT_KEY -'D'
 
 #ifdef _WIN32
 #define ARR_UP_EC 72
