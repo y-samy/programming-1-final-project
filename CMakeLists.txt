@@ -7,30 +7,33 @@ include_directories(include src/ui src/hotel)
 add_executable(hotel src/main.c
         src/hotel/auth/login.c
         src/hotel/auth/login.h
-        include/libui/platform.c
-        include/libui/platform.h
-        include/libui/io.c
-        include/libui/io.h
-        include/libui/charcodes.h
+        src/hotel/management/rooms.c
+        src/hotel/management/rooms.h
+        src/hotel/management/reservations.c
+        src/hotel/management/reservations.h
+
         src/ui/menus/main.c
         src/ui/menus/main.h
         src/ui/menus/root.c
         src/ui/menus/root.h
         src/ui/menus/login.c
         src/ui/menus/login.h
-        src/ui/ui.h
         src/ui/menus/availability.c
         src/ui/menus/availability.h
-        src/hotel/management/rooms.c
-        src/hotel/management/rooms.h
-        src/hotel/management/reservations.c
-        src/hotel/management/reservations.h
-        include/libdate.c
-        include/libdate.h
-        src/hotel/management.c
-        src/hotel/management.h
         src/ui/menus/reservation.c
         src/ui/menus/reservation.h
+        src/ui/ui.h
+
+
+        include/libui/platform.c
+        include/libui/platform.h
+        include/libui/io.c
+        include/libui/io.h
+        include/libui/charcodes.h
+
+        include/libdate.c
+        include/libdate.h
+
 
 
 )

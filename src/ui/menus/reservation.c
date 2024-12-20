@@ -1,5 +1,4 @@
-#include "reservation.h"
-#include "management.h"
+#include <management/reservations.h>
 #include <stdlib.h>
 #include <time.h>
 #include <libui/io.h>

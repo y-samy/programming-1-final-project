@@ -7,7 +7,7 @@ typedef struct {
     char name[100];
     char nationalId[15];
     char email[100];
-    int phoneNum;
+    char phoneNum[15];
 } customer_t;
 
 typedef struct {
