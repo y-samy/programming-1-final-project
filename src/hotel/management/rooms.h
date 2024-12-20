@@ -23,3 +23,4 @@ size_t get_room_count(void);
 int get_room_id(room_t *room);
 char *get_view_s(room_t *room);
 char *get_availability_s(room_t *room);
+room_view_t get_view_from_string(char *view_s);

@@ -120,6 +120,13 @@ char *get_view_s(room_t *room)
     }
 }
 
+room_view_t get_view_from_string(char *view_s)
+{
+    if (!strcmp(view_s, "SeaView")) return SeaView;
+    if (!strcmp(view_s, "LakeView")) return LakeView;
+    if (!strcmp(view_s, "GardenView")) return GardenView;
+}
+
 int get_room_id(room_t *room)
 {
     return room->id;
