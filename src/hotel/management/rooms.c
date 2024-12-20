@@ -29,12 +29,7 @@ size_t room_count(bool reset) /* private */
     return count;
 }
 
-size_t get_room_count(void)
-{
-    return room_count(false);
-}
-
-room_t *get_room_list(size_t room_count, bool reset)
+room_t *room_list(size_t room_count, bool reset) /* private */
 {
     static room_t *rooms_list = NULL;
     if (reset) {
@@ -66,16 +61,22 @@ room_t *get_room_list(size_t room_count, bool reset)
     return rooms_list;
 }
 
+size_t get_room_count(void)
+{
+    return room_count(false);
+}
+
+
 room_t *load_rooms(void)
 {
-    return get_room_list(room_count(false), false);
+    return room_list(room_count(false), false);
 }
 
 void save_and_unload_rooms(void)
 {
     FILE *rooms_file = fopen(ROOM_FILE_NAME, "w");
     size_t count = room_count(false);
-    room_t *rooms_list = get_room_list(count, false);
+    room_t *rooms_list = room_list(count, false);
     size_t i;
     for (i = 0; i < count; i++) {
         fprintf(rooms_file, "%d %s %s %d", get_room_id(rooms_list + i), get_availability_s(rooms_list + i),
