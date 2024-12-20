@@ -3,12 +3,10 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-#include <libui/io.h>
-
 
 reservation_t* loadReservation(void)
 {
-    FILE* f_reservation =fopen("Reservation.txt","r");
+    FILE* f_reservation = fopen("Reservation.txt","r");
     int c;
     int count = 0;
     while ((c= fgetc(f_reservation)) != EOF) {
@@ -18,7 +16,8 @@ reservation_t* loadReservation(void)
 
     reservation_t *reservations = malloc(count * sizeof(reservation_t));
 
-    for (int i = 0; i <= count; i++)
+    int i;
+    for (i = 0; i <= count; i++)
     {
         /*
         Reservation_ID,
@@ -51,16 +50,15 @@ reservation_t* loadReservation(void)
             &reservations[i].n_nights);
 
         fscanf(f_reservation,"%2d-%2d-%4d,",
-            reservations[i].date.day,
-            reservations[i].date.month,
-            reservations[i].date.year);
+            &reservations[i].date.day,
+            &reservations[i].date.month,
+            &reservations[i].date.year);
 
         fscanf(f_reservation, "%99s, %14s",
            reservations[i].customer.email,
            reservations[i].customer.phoneNum
            );
     }
-
     fclose(f_reservation);
     return reservations;
 }
@@ -68,18 +66,8 @@ reservation_t* loadReservation(void)
 
 int ID()
 {
-    int i = 0;
-    {
-        time_t t = time(NULL);
-        srand(t);
-        return rand() % 10000;
-    }
+    time_t t = time(NULL);
+    srand(t);
+    return rand() % 10000;
 }
 
-void reserveRoom()
-{
-
-
-
-
-}
