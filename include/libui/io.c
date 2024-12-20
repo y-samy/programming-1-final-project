@@ -10,6 +10,87 @@ void display_menu(char *menu)
     printf("%s", menu);
 }
 
+const char *month_names[]  = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "SEP", "AUG", "OCT", "NOV", "DEC"};
+
+int input_date(struct tm *date)
+{
+    printf("Pick a day\n");
+    fflush(stdout);
+#ifdef __unix__
+    termios_echo(false);
+#endif
+    struct tm current_date = get_current_date();
+    current_date.tm_sec = current_date.tm_hour = current_date.tm_min = 0;
+    *date = current_date;
+    struct tm temp_date = *date;
+    char c;
+    int current_choice = 0;
+
+    while (1) {
+        temp_date = *date;
+        switch (current_choice) {
+            case 0:
+                printf(CLEAR_LN CLR_BG_YLW "%02d" CLR_RESET " / %s / %d", date->tm_mday, month_names[date->tm_mon], date->tm_year + 1900);
+            break;
+            case 1:
+                printf(CLEAR_LN "%02d / " CLR_BG_YLW "%s" CLR_RESET " / %d", date->tm_mday, month_names[date->tm_mon], date->tm_year + 1900);
+            break;
+            case 2:
+                printf(CLEAR_LN "%02d / %s / " CLR_BG_YLW "%d" CLR_RESET, date->tm_mday, month_names[date->tm_mon], date->tm_year + 1900);
+            break;
+
+        }
+        c = get_key();
+        switch (c) {
+            case '\n':
+                case '\r':
+            return 0;
+            case ESC_KEY:
+                return IO_STATUS_ESC;
+            case ARR_RIGHT_KEY:
+                if (current_choice < 2)
+                current_choice++;
+            break;
+            case ARR_LEFT_KEY:
+                if (current_choice > 0)
+                    current_choice--;
+            break;
+            case ARR_DOWN_KEY:
+                switch(current_choice) {
+                    case 0:
+                        temp_date.tm_mday--;
+                    break;
+                    case 1:
+                        temp_date.tm_mon--;
+                    break;
+                    case 2:
+                        temp_date.tm_year--;
+                    break;
+                }
+            break;
+            case ARR_UP_KEY:
+                switch(current_choice) {
+                    case 0:
+                        temp_date.tm_mday++;
+                    break;
+                    case 1:
+                        temp_date.tm_mon++;
+                    break;
+                    case 2:
+                        temp_date.tm_year++;
+                    break;
+                }
+            break;
+        }
+        if (difftime(mktime(&current_date), mktime(&temp_date)) <= 0)
+            *date = temp_date;
+
+    }
+#ifdef __unix__
+    termios_echo(true);
+#endif
+}
+
 int input(char *buffer, char *prompt_s, int max_size, int input_type)
 {
     printf("%s", prompt_s);
@@ -56,7 +137,7 @@ int input(char *buffer, char *prompt_s, int max_size, int input_type)
             continue;
         }
         input_valid = false;
-        if (i != max_size - 2) {
+        if (i != max_size - 1) {
             switch (input_type) {
                 case INPUT_ANY:
                     input_valid = (c >= ' ' && c < 128);

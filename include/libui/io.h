@@ -1,6 +1,7 @@
 #pragma once
 
 #include "charcodes.h"
+#include <libdate.h>
 
 #define ABRUPT_EXIT 1
 #define EXIT_SUCCESS 0
@@ -32,6 +33,7 @@
 
 
 int input(char *buffer, char *prompt_s, int max_size, int input_type);
+int input_date(struct tm *date);
 int choices(char *choices);
 void display_menu(char *menu);
 void clear_screen(void);
