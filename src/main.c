@@ -4,11 +4,12 @@
 
 int main()
 {
-    user_t user;
+    /* Deserialize */
+    user_t user = new_user_session();
+
     while (1) {
         if (root_menu() == ROOT_M_CHOICE_EXIT)
             return 0;
-        user = user_session();
         if(login_menu(&user) != LOGIN_M_SUCCES)
             continue;
         int menu_choice = main_menu();
@@ -17,5 +18,9 @@ int main()
             continue;
         }
     }
+    /* Unload serialized data */
+    end_user_session();
+    /* Deserialize */
+
     return 0;
 }

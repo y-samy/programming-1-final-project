@@ -3,34 +3,57 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct user_list {
-    size_t count;
-    user_t users[100];
-};
 
-struct user_list *get_user_list()
+size_t get_user_count(bool reset)
 {
-    static struct user_list users_l;
-    if (users_l.count)
-        return &users_l;
-    FILE *user_file = fopen("users.txt", "r");
-    if (!user_file) {
-        fprintf (stderr, "Error Opening Users File.\nfopen() in %s() failed.\n", __func__);
-        exit(1);
+    static size_t count = 0;
+    if (reset) { /* reset */
+        count = 0;
+        return count;
     }
-    while (!feof(user_file))
-    {
-        fscanf(user_file,"%99s %99s",&users_l.users[users_l.count].username,&users_l.users[users_l.count].password);
-        users_l.count++;
+    if (count)
+        return count;
+    int c;
+    FILE *users_file = fopen("users.txt", "r");
+    while ((c= fgetc(users_file)) != EOF) {
+        if (c == '\n')
+            count++;
     }
+    fclose(users_file);
+    return count;
 }
 
-user_t user_session()
+user_t *get_user_list(size_t user_count, bool reset)
+{
+    static user_t *user_list = NULL;
+    if (reset) { /* reset */
+        free(user_list);
+        return NULL;
+    }
+    if (user_list)
+        return user_list;
+    user_list = malloc(sizeof(user_t) * user_count);
+    size_t i;
+    FILE *users_file = fopen("users.txt", "r");
+    for (i = 0; i < user_count; i++)
+    {
+        fscanf(users_file,"%99s %99s",&user_list[i].username,&user_list[i].password);
+    }
+    fclose(users_file);
+    return user_list;
+}
+
+user_t new_user_session()
 {
     user_t user;
     user.logged_in = false;
-    get_user_list();
+    get_user_list(get_user_count(false), false);
     return user;
+}
+
+void end_user_session(void)
+{
+    get_user_list(get_user_count(true), true);
 }
 
 bool is_logged_in(user_t *user)
@@ -40,18 +63,19 @@ bool is_logged_in(user_t *user)
 
 bool verify_username(user_t *user, const char *username)
 {
-    size_t j = 0;
+    size_t i = 0;
     bool valid = false;
-    struct user_list *users_l = get_user_list();
-    for (j = 0; j < users_l->count; j++) {
-        if (!strcmp(username, users_l->users[j].username)) {
+    size_t user_count = get_user_count(false);
+    user_t *user_list = get_user_list(user_count, false);
+    for (i = 0; i < user_count; i++) {
+        if (!strcmp(username, user_list[i].username)) {
             valid = true;
             break;
         }
     }
     if (valid) {
-        strcpy(user->username,users_l->users[j].username);
-        strcpy(user->password,users_l->users[j].password);
+        strcpy(user->username,user_list[i].username);
+        strcpy(user->password,user_list[i].password);
     }
     return valid;
 }
