@@ -11,7 +11,7 @@
 void clear_screen(void)
 {
     system("cls");
-    printf(CLR_RESET CARET_RESET);
+    printf(CLR_RESET CARET_RESET CUR_ORIGIN);
 }
 
 int get_key(void)
@@ -53,7 +53,7 @@ int get_key(void)
 void clear_screen(void)
 {
     system("clear");
-    printf(CLR_RESET CARET_RESET);
+    printf(CLR_RESET CARET_RESET CUR_ORIGIN);
 }
 
 int termios_echo(bool state)
