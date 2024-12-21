@@ -6,8 +6,10 @@
 "CHECK ROOM AVAILABILITY\n"\
 "-----------------------\n\n"
 
-int availability_menu(room_t *room_list, size_t count)
+int availability_menu()
 {
+    size_t count = get_room_count();
+    room_t *room_list = get_room_list();
     display_menu(MENU_STATIC);
     size_t i;
     printf(CLR_BG_GREEN "Available Rooms:\n" CLR_RESET);
