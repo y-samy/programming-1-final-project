@@ -3,6 +3,7 @@
 #define CLEAR_LN "\33[2K\r"
 #define CUR_UP "\033[A"
 #define CUR_DOWN "\033[B"
+#define CUR_ORIGIN "\033[1;1H"
 
 #define CARET_HIDE "\033[?25l"
 #define CARET_RESET "\033[?25h"
