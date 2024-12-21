@@ -121,19 +121,22 @@ reservation_t *get_reservations_list(void)
 }
 
 /* Manipulate memory */
-static void remove_reservation(size_t index)
+static void remove_reservation(reservation_t *reservation)
 {
     size_t new_count = count_holder(get_reservations_count() - 1, false);
     reservation_t *reservations_list = list_holder(NULL, false);
+    size_t index;
+    size_t i = 0, j = 0;
+    for (i = 0; i < new_count+i; i++) {
+        if (&reservations_list[i] == reservation) {
+            index = i;
+            break;
+        }
+    }
     reservation_t *new_reservation_list = NULL;
     new_reservation_list = malloc(new_count * sizeof(reservation_t));
-    size_t i = 0, j = 0;
-    for (i = 0, j = 0; j < new_count; i++) {
-        if (i == index)
-            continue;
-        memcpy(new_reservation_list + i, reservations_list + j, sizeof(reservation_t));
-        j++;
-    }
+   memcpy(new_reservation_list, reservations_list, index * sizeof(reservation_t));
+    memcpy(new_reservation_list + index, reservations_list + index + 1, (new_count - index) * sizeof(reservation_t));
     free(reservations_list);
     list_holder(new_reservation_list, false);
 }
@@ -148,6 +151,12 @@ static void append_reservation(reservation_t *new_reservation)
         return; /* Keeps old pointer */
     memcpy(new_reservation_list + new_count - 1, new_reservation, sizeof(reservation_t));
     list_holder(new_reservation_list, false);
+}
+
+void end_reservation(reservation_t *reservation)
+{
+    remove_reservation(reservation);
+
 }
 
 void add_reservation(reservation_t *new_reservation)

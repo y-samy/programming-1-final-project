@@ -27,4 +27,6 @@ void load_reservations(void);
 size_t get_reservations_count(void);
 
 reservation_t *get_reservations_list(void);
+reservation_t *get_reservation_by_id(int id);
+void end_reservation(reservation_t *reservation);
 void add_reservation(reservation_t *new_reservation);

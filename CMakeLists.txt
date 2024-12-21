@@ -36,6 +36,8 @@ add_executable(hotel src/main.c
         include/libdate.h
         src/ui/menus/check_in.c
         src/ui/menus/check_in.h
+        src/ui/menus/cancel_reservation.c
+        src/ui/menus/cancel_reservation.h
 
 
 )
