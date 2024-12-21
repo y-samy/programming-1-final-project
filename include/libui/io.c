@@ -10,7 +10,7 @@ void display_menu(char *menu)
     printf("%s", menu);
 }
 
-const char *month_names[]  = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "SEP", "AUG", "OCT", "NOV", "DEC"};
+const char *month_names[] = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "SEP", "AUG", "OCT", "NOV", "DEC"};
 
 int input_date(struct tm *date)
 {
@@ -21,7 +21,6 @@ int input_date(struct tm *date)
 #endif
     printf(CARET_HIDE);
     struct tm current_date = get_current_date();
-    current_date.tm_sec = current_date.tm_hour = current_date.tm_min = 0;
     *date = current_date;
     struct tm temp_date = *date;
     char c;
@@ -31,68 +30,73 @@ int input_date(struct tm *date)
         temp_date = *date;
         switch (current_choice) {
             case 0:
-                printf(CLEAR_LN CLR_BG_YLW CLR_TEXT_BLACK "%02d" CLR_RESET " / %s / %d", date->tm_mday, month_names[date->tm_mon], date->tm_year + 1900);
-            break;
+                printf(CLEAR_LN SELECTION_HIGHLIGHT "%02d" CLR_RESET " / %s / %d", date->tm_mday,
+                       month_names[date->tm_mon], date->tm_year + 1900);
+                break;
             case 1:
-                printf(CLEAR_LN "%02d / " CLR_BG_YLW  CLR_TEXT_BLACK "%s" CLR_RESET " / %d", date->tm_mday, month_names[date->tm_mon], date->tm_year + 1900);
-            break;
+                printf(CLEAR_LN "%02d / " SELECTION_HIGHLIGHT "%s" CLR_RESET " / %d", date->tm_mday,
+                       month_names[date->tm_mon], date->tm_year + 1900);
+                break;
             case 2:
-                printf(CLEAR_LN "%02d / %s / " CLR_BG_YLW CLR_TEXT_BLACK "%d" CLR_RESET, date->tm_mday, month_names[date->tm_mon], date->tm_year + 1900);
-            break;
-
+                printf(CLEAR_LN "%02d / %s / " SELECTION_HIGHLIGHT "%d" CLR_RESET, date->tm_mday,
+                       month_names[date->tm_mon], date->tm_year + 1900);
+                break;
         }
         c = get_key();
         switch (c) {
             case '\n':
-                case '\r':
-            return 0;
+            case '\r':
+#ifdef __unix__
+                termios_echo(true);
+#endif
+            printf(CLEAR_LN CLR_RESET "%02d / %s / %d" CARET_RESET, date->tm_mday,
+                   month_names[date->tm_mon], date->tm_year + 1900);
+                return 0;
             case ESC_KEY:
+#ifdef __unix__
+                termios_echo(true);
+#endif
+                printf(CARET_RESET);
                 return IO_STATUS_ESC;
             case ARR_RIGHT_KEY:
                 if (current_choice < 2)
-                current_choice++;
-            break;
+                    current_choice++;
+                break;
             case ARR_LEFT_KEY:
                 if (current_choice > 0)
                     current_choice--;
-            break;
+                break;
             case ARR_DOWN_KEY:
-                switch(current_choice) {
+                switch (current_choice) {
                     case 0:
                         temp_date.tm_mday--;
-                    break;
+                        break;
                     case 1:
                         temp_date.tm_mon--;
-                    break;
+                        break;
                     case 2:
                         temp_date.tm_year--;
-                    break;
+                        break;
                 }
-            break;
+                break;
             case ARR_UP_KEY:
-                switch(current_choice) {
+                switch (current_choice) {
                     case 0:
                         temp_date.tm_mday++;
-                    break;
+                        break;
                     case 1:
                         temp_date.tm_mon++;
-                    break;
+                        break;
                     case 2:
                         temp_date.tm_year++;
-                    break;
+                        break;
                 }
-            break;
+                break;
         }
-        if (difftime(mktime(&current_date), mktime(&temp_date)) > 0 || temp_date.tm_year >  current_date.tm_year + 100)
+        if (difftime(mktime(&current_date), mktime(&temp_date)) > 0 || temp_date.tm_year > current_date.tm_year + 100)
             continue;
         *date = temp_date;
-
     }
-#ifdef __unix__
-    termios_echo(true);
-#endif
-    printf(CARET_RESET);
-    return 0;
 }
 
 int input(char *buffer, char *prompt_s, int max_size, int input_type)
@@ -124,7 +128,8 @@ int input(char *buffer, char *prompt_s, int max_size, int input_type)
         if (c == EOF || c == CTRL_C_KEY)
             exit(ABRUPT_EXIT);
         if ((c == '\n' || c == '\r') && i > 0) {
-            if (input_type == INPUT_EMAIL && (email_at_i == -1 || email_dot_i == -1 || buffer[i-1] == '@' || buffer[i-1] == '.' || buffer[i-2] == '.'))
+            if (input_type == INPUT_EMAIL && (email_at_i == -1 || email_dot_i == -1 || buffer[i - 1] == '@' || buffer[
+                                                  i - 1] == '.' || buffer[i - 2] == '.'))
                 continue;
             break;
         }
@@ -177,10 +182,10 @@ int input(char *buffer, char *prompt_s, int max_size, int input_type)
                         input_valid = (c >= '0' && c <= '9');
                     break;
                 case INPUT_EMAIL:
-                    if (c == '@' && email_at_i == -1 && i && buffer[i-1] != '.') {
+                    if (c == '@' && email_at_i == -1 && i && buffer[i - 1] != '.') {
                         email_at_i = i;
                         input_valid = true;
-                    } else if (c == '.' && buffer[i - 1] != '.' && i && buffer[i-1] != '@') {
+                    } else if (c == '.' && buffer[i - 1] != '.' && i && buffer[i - 1] != '@') {
                         if (email_at_i != -1 && email_dot_i == -1)
                             email_dot_i = i;
                         input_valid = true;
@@ -234,9 +239,9 @@ int choices(char *choices)
         choice_i[i++] = _token;
         _token = strtok(NULL, "\n");
     }
-    printf(CLR_BG_YLW ">%s\n" CLR_RESET, choice_i[0]);
+    printf(SELECTION_HIGHLIGHT ">%s\n" CLR_RESET, choice_i[0]);
     for (i = 1; i < choice_count; ++i) {
-        printf("%s\n", choice_i[i]);
+        printf(CLEAR_LN "%s\n", choice_i[i]);
     }
     printf("\033[%dA", choice_count);
     char c;
@@ -258,14 +263,17 @@ int choices(char *choices)
 #ifdef __unix__
             termios_echo(true);
 #endif
+            printf("\033[%dB", choice_count-current_choice+1);
             return current_choice;
         }
         if (c == ARR_UP_KEY && current_choice > 1) {
-            printf(CLEAR_LN CLR_RESET "%s" CUR_UP CLEAR_LN CLR_BG_YLW ">%s" CLR_RESET, choice_i[current_choice - 1],
+            printf(CLEAR_LN CLR_RESET "%s" CUR_UP CLEAR_LN SELECTION_HIGHLIGHT ">%s" CLR_RESET,
+                   choice_i[current_choice - 1],
                    choice_i[current_choice - 2]);
             current_choice--;
         } else if (c == ARR_DOWN_KEY && current_choice < choice_count) {
-            printf(CLEAR_LN CLR_RESET "%s" CUR_DOWN CLEAR_LN CLR_BG_YLW ">%s" CLR_RESET, choice_i[current_choice - 1],
+            printf(CLEAR_LN CLR_RESET "%s" CUR_DOWN CLEAR_LN SELECTION_HIGHLIGHT ">%s" CLR_RESET,
+                   choice_i[current_choice - 1],
                    choice_i[current_choice]);
             current_choice++;
         }

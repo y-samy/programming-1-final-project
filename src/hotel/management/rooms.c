@@ -2,19 +2,12 @@
 #include <stdio.h>
 #include <string.h>
 
-size_t room_count(bool reset) /* private */
+static size_t file_entry_count()
 {
-    static size_t count = 0;
-    if (reset) {
-        /* reset */
-        count = 0;
-        return count;
-    }
-    if (count)
-        return count;
+    size_t count = 0;
     char c, prev_c = 0;
     FILE *rooms_file = fopen(ROOM_FILE_NAME, "r");
-    while(1){
+    while (1) {
         c = fgetc(rooms_file);
         if (c == EOF) {
             if (prev_c != '\n')
@@ -29,22 +22,48 @@ size_t room_count(bool reset) /* private */
     return count;
 }
 
-room_t *room_list(size_t room_count, bool reset) /* private */
+static size_t count_holder(size_t new_count, bool unset)
 {
-    static room_t *rooms_list = NULL;
-    if (reset) {
-        free(rooms_list);
-        return NULL;
-    }
-    if (rooms_list)
-        return rooms_list;
-    rooms_list = malloc(room_count * sizeof(room_t));
+    /*
+     * Usage:
+     * set to 0: count_holder(0, true);
+     * set to n > 0: count_holder(n, false);
+     * get value: count_holder(0, false);
+     */
+    static size_t count = 0;
+    if (unset)
+        count = 0;
+    else if (new_count)
+        count = new_count;
+    return count;
+}
+
+static room_t *list_holder(room_t *new_list, bool unset)
+{
+    /*
+     * Usage:
+     * set to NULL: list_holder(NULL, true);
+     * set to room_t ptr: list_holder(ptr, false);
+     * get ptr: list_holder(NULL, false);
+     */
+    static room_t *room_list = NULL;
+    if (unset)
+        room_list = NULL;
+    if (new_list != NULL)
+        room_list = new_list;
+    return room_list;
+}
+
+static void load_from_file()
+{
+    size_t room_count = count_holder(0, false);
+    room_t *rooms_list = malloc(room_count * sizeof(room_t));
     FILE *rooms_file = fopen(ROOM_FILE_NAME, "r");
     size_t i;
-    char avail_buffer[10];
+    char avail_buffer[14];
     char room_category_buffer[11];
     for (i = 0; i < room_count; i++) {
-        fscanf(rooms_file, "%d %9s %10s %d", &rooms_list[i].id, avail_buffer, room_category_buffer,
+        fscanf(rooms_file, "%d %s %s %d", &rooms_list[i].id, avail_buffer, room_category_buffer,
                &rooms_list[i].price);
         if (!strcmp(avail_buffer, "Available"))
             rooms_list[i].is_available = true;
@@ -58,31 +77,37 @@ room_t *room_list(size_t room_count, bool reset) /* private */
             rooms_list[i].view_category = GardenView;
     }
     fclose(rooms_file);
-    return rooms_list;
+    list_holder(rooms_list, false);
 }
 
 size_t get_room_count(void)
 {
-    return room_count(false);
+    return count_holder(0, false);
 }
 
-
-room_t *load_rooms(void)
+room_t *get_room_list(void)
 {
-    return room_list(room_count(false), false);
+    return list_holder(NULL, false);
+}
+
+void load_rooms(void)
+{
+    count_holder(file_entry_count(), false);
+    load_from_file();
 }
 
 void save_and_unload_rooms(void)
 {
     FILE *rooms_file = fopen(ROOM_FILE_NAME, "w");
-    size_t count = room_count(false);
-    room_t *rooms_list = room_list(count, false);
+    size_t count = get_room_count();
+    room_t *rooms_list = get_room_list();
     size_t i;
     for (i = 0; i < count; i++) {
-        fprintf(rooms_file, "%d %s %s %d", get_room_id(rooms_list + i), get_availability_s(rooms_list + i),
+        fprintf(rooms_file, "%d %s %s %d\n", get_room_id(rooms_list + i), get_availability_s(rooms_list + i),
                 get_view_s(rooms_list + i), get_price(rooms_list + i));
     }
     fclose(rooms_file);
+    free(rooms_list);
 }
 
 bool is_available(room_t *room)
@@ -100,7 +125,7 @@ int get_price(room_t *room)
     return room->price;
 }
 
-room_view_t get_view(room_t *room)
+room_view_t get_room_view(room_t *room)
 {
     return room->view_category;
 }
@@ -130,6 +155,18 @@ room_view_t get_view_from_string(char *view_s)
 int get_room_id(room_t *room)
 {
     return room->id;
+}
+
+room_t *get_room_by_id(int id)
+{
+    size_t room_count = count_holder(0, false);
+    room_t *rooms_list = list_holder(NULL, false);
+    size_t i;
+    for (i = 0; i < room_count; i++) {
+        if (rooms_list[i].id == id)
+            return rooms_list + i;
+    }
+    return NULL;
 }
 
 void set_available(room_t *room, bool available)
