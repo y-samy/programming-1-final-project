@@ -242,7 +242,7 @@ int choices(char *choices)
     }
     printf(SELECTION_HIGHLIGHT ">%s\n" CLR_RESET, choice_i[0]);
     for (i = 1; i < choice_count; ++i) {
-        printf("%s\n", choice_i[i]);
+        printf(CLEAR_LN "%s\n", choice_i[i]);
     }
     printf("\033[%dA", choice_count);
     char c;
@@ -264,6 +264,7 @@ int choices(char *choices)
 #ifdef __unix__
             termios_echo(true);
 #endif
+            printf("\033[%dB", choice_count-current_choice+1);
             return current_choice;
         }
         if (c == ARR_UP_KEY && current_choice > 1) {
