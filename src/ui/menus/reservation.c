@@ -38,7 +38,7 @@ int reserve_room()
     putchar('\n');
     input_date(&reservation->date);
 
-    if (input(tmp,   "\nNumber of nights: ", 3, INPUT_INT_POSITIVE) == IO_STATUS_ESC)
+    if (input(tmp,"\nNumber of nights: ", 3, INPUT_INT_POSITIVE) == IO_STATUS_ESC)
         return 0;
     reservation->n_nights = atoi(tmp);
     reservation->confirmed = false;
@@ -54,6 +54,7 @@ int reserve_room()
             if (get_room_view(rooms + i) == room_category && is_available(rooms + i)) {
                 reservation->room_p = rooms + i;
                 set_available(rooms+i, false);
+                break;
             }
         }
         if (reservation->room_p == NULL)

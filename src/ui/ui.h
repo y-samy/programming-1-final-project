@@ -5,3 +5,4 @@
 #include "menus/main.h"
 #include "menus/availability.h"
 #include "menus/reservation.h"
+#include "menus/check_in.h"

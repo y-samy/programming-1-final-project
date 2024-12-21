@@ -21,7 +21,6 @@ int input_date(struct tm *date)
 #endif
     printf(CARET_HIDE);
     struct tm current_date = get_current_date();
-    current_date.tm_sec = current_date.tm_hour = current_date.tm_min = 0;
     *date = current_date;
     struct tm temp_date = *date;
     char c;
