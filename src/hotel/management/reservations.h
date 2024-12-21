@@ -13,9 +13,18 @@ typedef struct {
 
 typedef struct {
     int reservation_id;
-    room_t room;
-    bool status; /* unconfirmed: 0, confirmed: 1*/
+    room_t *room_p;
+    bool confirmed; /* unconfirmed: 0, confirmed: 1*/
     int n_nights;
     struct tm date;
     customer_t customer;
 } reservation_t;
+
+void save_and_unload_reservations(void);
+
+void load_reservations(void);
+
+size_t get_reservations_count(void);
+
+reservation_t *get_reservations_list(void);
+void add_reservation(reservation_t *new_reservation);
