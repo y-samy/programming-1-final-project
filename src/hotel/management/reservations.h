@@ -19,3 +19,5 @@ typedef struct {
     struct tm date;
     customer_t customer;
 } reservation_t;
+
+reservation_t* loadReservation(void);

@@ -7,6 +7,8 @@
 reservation_t* loadReservation(void)
 {
     FILE* f_reservation = fopen("Reservation.txt","r");
+    if (!f_reservation) return NULL;
+
     int c;
     int count = 0;
     while ((c= fgetc(f_reservation)) != EOF) {
@@ -17,7 +19,7 @@ reservation_t* loadReservation(void)
     reservation_t *reservations = malloc(count * sizeof(reservation_t));
 
     int i;
-    for (i = 0; i <= count; i++)
+    for (i = 0; i < count; i++)
     {
         /*
         Reservation_ID,
