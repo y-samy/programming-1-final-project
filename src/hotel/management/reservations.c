@@ -105,7 +105,7 @@ static int generate_id(void)
         t = time(NULL);
         srand(t);
         id = rand() % 10000;
-    } while (get_reservation_by_id(id) != NULL);
+    } while (get_reservation_by_id(id) == NULL);
 }
 
 

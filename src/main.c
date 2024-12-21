@@ -29,7 +29,7 @@ int main()
     }
     /* Unload serialized data */
     end_user_session();
-    save_and_unload_reservations();
+    /* Deserialize */
     save_and_unload_rooms();
     return 0;
 }
