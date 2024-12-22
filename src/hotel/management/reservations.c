@@ -12,7 +12,7 @@ static reservation_t *list_holder(reservation_t *new_list, bool unset)
     /*
      * Usage:
      * set to NULL: list_holder(NULL, true);
-     * set to room_t ptr: list_holder(ptr, false);
+     * set to reservation_t ptr: list_holder(ptr, false);
      * get ptr: list_holder(NULL, false);
      */
     static reservation_t *reservation_list = NULL;
@@ -105,7 +105,8 @@ static int generate_id(void)
         t = time(NULL);
         srand(t);
         id = rand() % 10000;
-    } while (get_reservation_by_id(id) == NULL);
+    } while (get_reservation_by_id(id) != NULL);
+    return id;
 }
 
 
