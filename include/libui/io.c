@@ -149,11 +149,11 @@ int input(char *buffer, char *prompt_s, int max_size, int input_type)
         if (i != max_size - 1) {
             switch (input_type) {
                 case INPUT_ANY:
-                    input_valid = (c >= ' ' && c < 128);
+                    input_valid = (c >= ' ' && c < 127);
                     break;
                 case INPUT_USERNAME:
                 case INPUT_PASSWORD:
-                    input_valid = (c > ' ' && c < 128);
+                    input_valid = (c > ' ' && c < 127);
                     break;
                 case INPUT_INT_POSITIVE:
                     input_valid = (c >= '0' && c <= '9');
