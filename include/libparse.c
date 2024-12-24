@@ -16,6 +16,5 @@ size_t file_entry_count(FILE *file_p)
             count++;
         prev_c = c;
     }
-    fclose(file_p);
     return count;
 }
