@@ -5,23 +5,35 @@
 #include <string.h>
 
 
-static void set_echo(bool mode)
+typedef enum {ECHO_OFF, ECHO_THRU, ECHO_MASK, ECHO_ON} echo_mode;
+
+static void set_echo(echo_mode mode)
 {
     switch (mode) {
-        case true:
-#ifdef __unix__
-            termios_echo(true);
-#endif
-        printf(CARET_RESET);
-
-        break;
-        case false:
+        case ECHO_OFF:
+            printf(CARET_HIDE);
 #ifdef __unix__
             termios_echo(false);
 #endif
-        printf(CARET_HIDE);
-
-        break;
+            break;
+        case ECHO_MASK:
+            printf(CARET_RESET);
+#ifdef __unix__
+            termios_echo(false);
+#endif
+            break;
+        case ECHO_THRU:
+            printf(CARET_RESET);
+#ifdef __unix__
+            termios_echo(false);
+#endif
+            break;
+        case ECHO_ON:
+            printf(CARET_RESET);
+#ifdef __unix__
+            termios_echo(true);
+#endif
+            break;
     }
 }
 
@@ -39,7 +51,7 @@ int input_date(struct tm *base_date, struct tm *date_buffer)
 {
     printf("Pick a day\n");
     fflush(stdout);
-    set_echo(false);
+    set_echo(ECHO_OFF);
     struct tm current_date = get_current_date();
     *date_buffer = (difftime(mktime(&current_date), mktime(base_date)) > 0) ? current_date : *base_date;
     struct tm temp_date = *date_buffer;
@@ -68,15 +80,15 @@ int input_date(struct tm *base_date, struct tm *date_buffer)
             case '\r':
                 printf(CLEAR_LN CLR_RESET "%02d / %s / %d", date_buffer->tm_mday,
                        month_names[date_buffer->tm_mon], date_buffer->tm_year + 1900);
-                set_echo(true);
+                set_echo(ECHO_ON);
                 return 0;
             case ESC_KEY:
-                set_echo(true);
+                set_echo(ECHO_ON);
                 return IO_STATUS_ESC;
             case CTRL_C_KEY:
             case CTRL_D_KEY:
             case EOF:
-                set_echo(true);
+                set_echo(ECHO_ON);
                 return IO_STATUS_EXIT;
             case ARR_RIGHT_KEY:
                 if (current_choice < 2)
@@ -123,16 +135,11 @@ int input(char *buffer, char *prompt_s, int max_size, int input_type, bool edit)
 {
     printf("%s", prompt_s);
     fflush(stdout);
-    bool echo_mode;
-    if (input_type == INPUT_PASSWORD) {
-        set_echo(false);
-        printf(CARET_RESET);
-        echo_mode = false;
-    }
-    else {
-        set_echo(true);
-        echo_mode = true;
-    }
+    echo_mode local_echo_mode = ECHO_THRU;
+    if (input_type == INPUT_PASSWORD)
+        local_echo_mode = ECHO_MASK;
+    
+    set_echo(local_echo_mode);
 
     int i = 0;
     int c;
@@ -157,11 +164,11 @@ int input(char *buffer, char *prompt_s, int max_size, int input_type, bool edit)
     while (true) {
         c = get_key(); /* does not print what you type */
         if (c == ESC_KEY) {
-            set_echo(true);
+            set_echo(ECHO_ON);
             return IO_STATUS_ESC;
         }
         if (c == EOF || c == CTRL_C_KEY || c == CTRL_D_KEY) {
-            set_echo(true);
+            set_echo(ECHO_ON);
             return IO_STATUS_EXIT;
         }
         if ((c == '\n' || c == '\r') && i > 0) {
@@ -234,7 +241,7 @@ int input(char *buffer, char *prompt_s, int max_size, int input_type, bool edit)
         }
         if (input_valid) {
             /* Echo handling */
-            if (echo_mode)
+            if (local_echo_mode == ECHO_THRU)
                 putchar(c);
             else /* Password hiding */
                 putchar('*');
@@ -245,7 +252,7 @@ int input(char *buffer, char *prompt_s, int max_size, int input_type, bool edit)
     }
     buffer[i] = '\0';
 
-    set_echo(true);
+    set_echo(ECHO_ON);
     return 0;
 }
 
@@ -278,19 +285,19 @@ int choices(char *choices)
     while (1) {
         c = get_key();
         if (c == ESC_KEY) {
-            set_echo(true);
+            set_echo(ECHO_ON);
             free(_choices_s);
             free(choice_i);
             return IO_STATUS_ESC;
         }
         if (c == EOF || c == CTRL_C_KEY || c == CTRL_D_KEY) {
-            set_echo(true);
+            set_echo(ECHO_ON);
             free(_choices_s);
             free(choice_i);
             return IO_STATUS_EXIT;
         }
         if ((c == '\n' || c == '\r')) {
-            set_echo(true);
+            set_echo(ECHO_ON);
             free(_choices_s);
             free(choice_i);
             printf("\033[%dB", choice_count - current_choice + 1);
