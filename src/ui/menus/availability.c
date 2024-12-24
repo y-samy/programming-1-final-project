@@ -2,27 +2,32 @@
 #include <libui/io.h>
 #include <stdio.h>
 
+#include "status.h"
+
 #define MENU_STATIC \
 "CHECK ROOM AVAILABILITY\n"\
 "-----------------------\n\n"
 
-int availability_menu()
+int availability_menu(HotelSession *session)
 {
-    size_t count = get_room_count();
-    room_t *room_list = get_room_list();
     display_menu(MENU_STATIC);
-    size_t i;
     printf(CLR_BG_GREEN "Available Rooms:\n" CLR_RESET);
-    for (i = 0; i < count; i++) {
-        if (is_available(room_list + i)) {
-            printf("%d %15s %d\n", get_room_id(room_list + i), get_view_s(room_list+i), get_price(room_list+i));
-        }
+    room_t *room = NULL;
+    room = get_available_rooms(session);
+    while (room != NULL) {
+        printf("%d %15s %d\n", get_room_id(room), stringify_view(room), get_price_per_night(room));
+        room = get_available_rooms(NULL);
     }
+
     printf(CLR_BG_RED "Reserved Rooms:\n" CLR_RESET);
-    for (i = 0; i < count; i++) {
-        if (!is_available(&room_list[i])) {
-            printf("%d %15s %d\n", get_room_id(room_list + i), get_view_s(room_list+i), get_price(room_list+i));
-        }
+    room = get_reserved_rooms(session);
+    while (room != NULL) {
+        printf("%d %15s %d\n", get_room_id(room), stringify_view(room), get_price_per_night(room));
+        room = get_reserved_rooms(NULL);
     }
-    return choices("Back\nExit\n");
+
+    if (choices("Back\nExit\n") == IO_STATUS_EXIT)
+        return MENU_SIGNAL_EXIT;
+
+    return MENU_SIGNAL_PROCEED;
 }

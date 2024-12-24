@@ -1,4 +1,6 @@
 #include "cancel_reservation.h"
+
+#include <stdlib.h>
 #include <libui/io.h>
 #include <management/reservations.h>
 
@@ -6,12 +8,12 @@
     "CANCEL RESERVATION\n"\
     "------------------\n\n"
 
-int cancel_reservation_menu()
+int cancel_reservation_menu(HotelSession *session)
 {
     display_menu(MENU_STATIC);
     int id;
     int id_buff[13];
-    input(id_buff, "Reservation ID: ", 10, INPUT_INT_POSITIVE);
+    input(id_buff, "Reservation ID: ", 10, INPUT_INT_POSITIVE, false);
     id = atoi(id_buff);
-    end_reservation(get_reservation_by_id(id));
+    cancel_reservation(session,id);
 }

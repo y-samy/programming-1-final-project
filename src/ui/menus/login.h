@@ -1,6 +1,4 @@
 #pragma once
-#include <auth/login.h>
+#include <login.h>
 
-#define LOGIN_M_SUCCES 0
-
-int login_menu(user_t *user);
+int login_menu(LoginSession *session);

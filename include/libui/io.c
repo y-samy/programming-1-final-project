@@ -4,60 +4,80 @@
 #include <stdio.h>
 #include <string.h>
 
+
+static void set_echo(bool mode)
+{
+    switch (mode) {
+        case true:
+#ifdef __unix__
+            termios_echo(true);
+#endif
+        printf(CARET_RESET);
+
+        break;
+        case false:
+#ifdef __unix__
+            termios_echo(false);
+#endif
+        printf(CARET_HIDE);
+
+        break;
+    }
+}
+
+
 void display_menu(char *menu)
 {
     clear_screen();
     printf("%s", menu);
 }
 
-const char *month_names[] = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "SEP", "AUG", "OCT", "NOV", "DEC"};
 
-int input_date(struct tm *date)
+static const char *month_names[] = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "SEP", "AUG", "OCT", "NOV", "DEC"};
+
+int input_date(struct tm *base_date, struct tm *date_buffer)
 {
     printf("Pick a day\n");
     fflush(stdout);
-#ifdef __unix__
-    termios_echo(false);
-#endif
-    printf(CARET_HIDE);
+    set_echo(false);
     struct tm current_date = get_current_date();
-    *date = current_date;
-    struct tm temp_date = *date;
-    char c;
+    *date_buffer = (difftime(mktime(&current_date), mktime(base_date)) > 0) ? current_date : *base_date;
+    struct tm temp_date = *date_buffer;
+    int c;
     int current_choice = 0;
 
     while (1) {
-        temp_date = *date;
+        temp_date = *date_buffer;
         switch (current_choice) {
             case 0:
-                printf(CLEAR_LN SELECTION_HIGHLIGHT "%02d" CLR_RESET " / %s / %d", date->tm_mday,
-                       month_names[date->tm_mon], date->tm_year + 1900);
+                printf(CLEAR_LN SELECTION_HIGHLIGHT "%02d" CLR_RESET " / %s / %d", date_buffer->tm_mday,
+                       month_names[date_buffer->tm_mon], date_buffer->tm_year + 1900);
                 break;
             case 1:
-                printf(CLEAR_LN "%02d / " SELECTION_HIGHLIGHT "%s" CLR_RESET " / %d", date->tm_mday,
-                       month_names[date->tm_mon], date->tm_year + 1900);
+                printf(CLEAR_LN "%02d / " SELECTION_HIGHLIGHT "%s" CLR_RESET " / %d", date_buffer->tm_mday,
+                       month_names[date_buffer->tm_mon], date_buffer->tm_year + 1900);
                 break;
             case 2:
-                printf(CLEAR_LN "%02d / %s / " SELECTION_HIGHLIGHT "%d" CLR_RESET, date->tm_mday,
-                       month_names[date->tm_mon], date->tm_year + 1900);
+                printf(CLEAR_LN "%02d / %s / " SELECTION_HIGHLIGHT "%d" CLR_RESET, date_buffer->tm_mday,
+                       month_names[date_buffer->tm_mon], date_buffer->tm_year + 1900);
                 break;
         }
         c = get_key();
         switch (c) {
             case '\n':
             case '\r':
-#ifdef __unix__
-                termios_echo(true);
-#endif
-            printf(CLEAR_LN CLR_RESET "%02d / %s / %d" CARET_RESET, date->tm_mday,
-                   month_names[date->tm_mon], date->tm_year + 1900);
+                printf(CLEAR_LN CLR_RESET "%02d / %s / %d", date_buffer->tm_mday,
+                       month_names[date_buffer->tm_mon], date_buffer->tm_year + 1900);
+                set_echo(true);
                 return 0;
             case ESC_KEY:
-#ifdef __unix__
-                termios_echo(true);
-#endif
-                printf(CARET_RESET);
+                set_echo(true);
                 return IO_STATUS_ESC;
+            case CTRL_C_KEY:
+            case CTRL_D_KEY:
+            case EOF:
+                set_echo(true);
+                return IO_STATUS_EXIT;
             case ARR_RIGHT_KEY:
                 if (current_choice < 2)
                     current_choice++;
@@ -95,38 +115,55 @@ int input_date(struct tm *date)
         }
         if (difftime(mktime(&current_date), mktime(&temp_date)) > 0 || temp_date.tm_year > current_date.tm_year + 100)
             continue;
-        *date = temp_date;
+        *date_buffer = temp_date;
     }
 }
 
-int input(char *buffer, char *prompt_s, int max_size, int input_type)
+int input(char *buffer, char *prompt_s, int max_size, int input_type, bool edit)
 {
     printf("%s", prompt_s);
     fflush(stdout);
-    int echo = ECHO;
-    if (input_type == INPUT_PASSWORD)
-        echo = ECHO_MASK;
-    /* Turn cursor off if ECHO_OFF */
-    if (echo != ECHO_OFF)
+    bool echo_mode;
+    if (input_type == INPUT_PASSWORD) {
+        set_echo(false);
         printf(CARET_RESET);
-    else
-        printf(CARET_HIDE);
-#ifdef __unix__
-    termios_echo(false);
-#endif
+        echo_mode = false;
+    }
+    else {
+        set_echo(true);
+        echo_mode = true;
+    }
 
     int i = 0;
-    char c;
+    int c;
     bool input_valid = false;
     int floating_point_i = -1;
     int email_at_i = -1;
     int email_dot_i = -1;
+    if (edit) {
+        i = strlen(buffer);
+        printf("%s", buffer);
+        if (input_type == INPUT_EMAIL) {
+            int j;
+            for (j = 0; j < i; j++) {
+                c = buffer[j];
+                if (c == '@' && email_at_i == -1)
+                    email_at_i = j;
+                if (c == '.' && email_dot_i == -1)
+                    email_dot_i = j;
+            }
+        }
+    }
     while (true) {
         c = get_key(); /* does not print what you type */
-        if (c == ESC_KEY)
+        if (c == ESC_KEY) {
+            set_echo(true);
             return IO_STATUS_ESC;
-        if (c == EOF || c == CTRL_C_KEY)
-            exit(ABRUPT_EXIT);
+        }
+        if (c == EOF || c == CTRL_C_KEY || c == CTRL_D_KEY) {
+            set_echo(true);
+            return IO_STATUS_EXIT;
+        }
         if ((c == '\n' || c == '\r') && i > 0) {
             if (input_type == INPUT_EMAIL && (email_at_i == -1 || email_dot_i == -1 || buffer[i - 1] == '@' || buffer[
                                                   i - 1] == '.' || buffer[i - 2] == '.'))
@@ -197,11 +234,10 @@ int input(char *buffer, char *prompt_s, int max_size, int input_type)
         }
         if (input_valid) {
             /* Echo handling */
-            if (echo == ECHO)
+            if (echo_mode)
                 putchar(c);
-            else if (echo == ECHO_MASK) /* Password hiding */
+            else /* Password hiding */
                 putchar('*');
-            /* If ECHO_OFF, nothing is sent out */
 
             buffer[i] = c;
             i++;
@@ -209,19 +245,13 @@ int input(char *buffer, char *prompt_s, int max_size, int input_type)
     }
     buffer[i] = '\0';
 
-#ifdef __unix__
-    termios_echo(true);
-#endif
-
+    set_echo(true);
     return 0;
 }
 
 int choices(char *choices)
 {
-#ifdef __unix__
-    termios_echo(false);
-#endif
-
+    set_echo(false);
     printf(CARET_HIDE);
     int current_choice = 1;
     int i = 0, choice_count = 0;
@@ -248,22 +278,22 @@ int choices(char *choices)
     while (1) {
         c = get_key();
         if (c == ESC_KEY) {
-#ifdef __unix__
-    termios_echo(true);
-#endif
+            set_echo(true);
             free(_choices_s);
             free(choice_i);
             return IO_STATUS_ESC;
         }
-        if (c == EOF || c == CTRL_C_KEY)
-            exit(ABRUPT_EXIT);
-        if ((c == '\n' || c == '\r')) {
+        if (c == EOF || c == CTRL_C_KEY || c == CTRL_D_KEY) {
+            set_echo(true);
             free(_choices_s);
             free(choice_i);
-#ifdef __unix__
-            termios_echo(true);
-#endif
-            printf("\033[%dB", choice_count-current_choice+1);
+            return IO_STATUS_EXIT;
+        }
+        if ((c == '\n' || c == '\r')) {
+            set_echo(true);
+            free(_choices_s);
+            free(choice_i);
+            printf("\033[%dB", choice_count - current_choice + 1);
             return current_choice;
         }
         if (c == ARR_UP_KEY && current_choice > 1) {

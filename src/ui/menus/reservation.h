@@ -1,3 +1,3 @@
 #pragma once
 
-int reserve_room();
+int reserve_room(HotelSession *session);

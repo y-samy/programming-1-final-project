@@ -1,35 +1,64 @@
+#include <stdlib.h>
+
 #include <ui.h>
-#include <auth/login.h>
-#include <management/reservations.h>
-#include <management/rooms.h>
+#include <login.h>
+#include <management.h>
+
+#include "menus/check_out.h"
+#include "menus/edit_reservation.h"
+
+void exit_routine(LoginSession *login_session, HotelSession *hotel_session);
 
 int main()
 {
-    /* Deserialize */
-    user_t user = new_user_session();
-    load_rooms();
-    load_reservations();
+    LoginSession *login_session = NULL;
+    HotelSession *hotel_session = NULL;
+    init_login_session(&login_session);
+    init_management_session(&hotel_session);
+    int response;
     while (1) {
-        if (root_menu() == ROOT_M_CHOICE_EXIT)
-            return 0;
-        if(login_menu(&user) != LOGIN_M_SUCCES)
+        response = root_menu();
+        if (response == MENU_SIGNAL_EXIT)
+            exit_routine(login_session, hotel_session);
+
+        response = login_menu(login_session);
+        if (response == MENU_SIGNAL_EXIT)
+            exit_routine(login_session, hotel_session);
+        if (response == MENU_SIGNAL_CANCEL)
             continue;
-        int menu_choice = main_menu();
-        if (menu_choice == MAIN_M_CHOICE_LOGOUT) {
-            logout(&user);
+
+
+        response = main_menu();
+        if (response == MENU_SIGNAL_EXIT)
+            exit_routine(login_session, hotel_session);
+        if (response == MENU_SIGNAL_CANCEL) {
+            logout(login_session);
             continue;
         }
-        if (menu_choice == 1)
-            reserve_room();
-        else if (menu_choice == 2)
-            check_in();
-        if (menu_choice == 5) {
-            availability_menu();
-        }
+        if (response == 1)
+            reserve_room(hotel_session);
+        if (response == 2)
+            check_in(hotel_session);
+        if (response == 3)
+            cancel_reservation_menu(hotel_session);
+        if (response == 4)
+            check_out_menu(hotel_session);
+        if (response == 5)
+            availability_menu(hotel_session);
+        if (response == 6)
+            view_customer_details(hotel_session);
+        if (response == 7)
+            edit_reservation_menu(hotel_session);
     }
-    /* Unload serialized data */
-    end_user_session();
-    /* Deserialize */
-    save_and_unload_rooms();
-    return 0;
+
+}
+
+
+void exit_routine(LoginSession *login_session, HotelSession *hotel_session)
+{
+    /* Unload user objects */
+    terminate_login_session(login_session);
+    /* Serialize and unload reservation, rooms and customer objects */
+    terminate_management_session(hotel_session);
+    exit(0);
 }

@@ -1,9 +1,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <libui/io.h>
-#include <management/rooms.h>
-#include <management/reservations.h>
+#include <management.h>
 
+#include "status.h"
 
 #define MENU_STATIC \
 "RESERVATION\n"\
@@ -11,54 +11,75 @@
 
 #define CATEGORY_CHOICES \
 "Sea View\n" \
-"Garden View\n" \
-"Lake View\n"
+"Lake View\n" \
+"Garden View\n"
 
 
-int reserve_room()
+int reserve_room(HotelSession *session)
 {
-    reservation_t *reservation = malloc(sizeof(reservation_t));
+    reservation_t reservation = create_reservation();
     display_menu(MENU_STATIC);
     bool input_valid = 0;
 
     char tmp[10];
+    int choice;
+    while (1) {
+        choice = input(reservation.customer.name, "Customer name: ", 100, INPUT_ALPHABETICAL, false);
+        if (choice == IO_STATUS_EXIT)
+            return MENU_SIGNAL_EXIT;
+        if (choice == IO_STATUS_ESC)
+            return MENU_SIGNAL_CANCEL;
 
-    if (input(reservation->customer.name,   "Customer name: ", 100, INPUT_ALPHABETICAL) == IO_STATUS_ESC)
-        return 0;
+        choice = input(reservation.customer.nationalId, "\nCustomer national ID: ", 15, INPUT_INT_ANY, false);
+        if (choice == IO_STATUS_EXIT)
+            return MENU_SIGNAL_EXIT;
+        if (choice == IO_STATUS_ESC)
+            continue;
 
-    if (input(reservation->customer.nationalId,   "\nCustomer national ID: ", 15, INPUT_INT_ANY) == IO_STATUS_ESC)
-        return 0;
+        choice = input(reservation.customer.email, "\nCustomer email: ", 100, INPUT_EMAIL, false);
+        if (choice == IO_STATUS_EXIT)
+            return MENU_SIGNAL_EXIT;
+        if (choice == IO_STATUS_ESC)
+            continue;
 
-    if (input(reservation->customer.email,   "\nCustomer email: ", 100, INPUT_EMAIL) == IO_STATUS_ESC)
-        return 0;
+        choice = input(reservation.customer.phoneNum, "\nCustomer mobile number: ", 15, INPUT_INT_POSITIVE, false);
+        if (choice == IO_STATUS_EXIT)
+            return MENU_SIGNAL_EXIT;
+        if (choice == IO_STATUS_ESC)
+            continue;
 
-    if (input(reservation->customer.phoneNum,   "\nCustomer mobile number: ", 15, INPUT_INT_POSITIVE) == IO_STATUS_ESC)
-        return 0;
+        putchar('\n');
+        struct tm current_date = get_current_date();
+        input_date(&current_date, &reservation.date);
 
-    putchar('\n');
-    input_date(&reservation->date);
-
-    if (input(tmp,"\nNumber of nights: ", 3, INPUT_INT_POSITIVE) == IO_STATUS_ESC)
-        return 0;
-    reservation->n_nights = atoi(tmp);
-    reservation->confirmed = false;
-    reservation->room_p = NULL;
-    putchar('\n');
-    do {
-        printf(CLEAR_LN "Choose room Category:\n");
-        room_view_t room_category = choices(CATEGORY_CHOICES)-1;
-        room_t *rooms = get_room_list();
-        size_t rooms_count = get_room_count();
-        size_t i;
-        for (i = 0; i < rooms_count; i++) {
-            if (get_room_view(rooms + i) == room_category && is_available(rooms + i)) {
-                reservation->room_p = rooms + i;
-                set_available(rooms+i, false);
+        choice = input(tmp, "\nNumber of nights: ", 3, INPUT_INT_POSITIVE, false);
+        if (choice == IO_STATUS_EXIT)
+            return MENU_SIGNAL_EXIT;
+        if (choice == IO_STATUS_ESC)
+            continue;
+        reservation.nights_count = atoi(tmp);
+        reservation.checked_in = false;
+        putchar('\n');
+        while (1) {
+            room_t *available_room = NULL;
+            printf(CLEAR_LN "Choose room Category:\n");
+            choice = choices(CATEGORY_CHOICES) - 1;
+            if (choice == IO_STATUS_EXIT)
+                return MENU_SIGNAL_EXIT;
+            if (choice == IO_STATUS_ESC)
                 break;
+            if ((available_room = get_available_room_by_category(session, choice)) != NULL) {
+                int id = add_reservation(session, available_room, reservation);
+                clear_screen();
+                display_menu(MENU_STATIC);
+                printf("Reservation Succeeded\nYour reservation ID: %d\n", id);
+                choice = choices("Main Menu\nExit\n");
+                if (choice == IO_STATUS_ESC || choice == 1)
+                    return MENU_SIGNAL_PROCEED;
+                if (choice == IO_STATUS_EXIT || choice == 2)
+                    return MENU_SIGNAL_EXIT;
             }
-        }
-        if (reservation->room_p == NULL)
             printf(CLEAR_LN "Sorry, there is no room with the chosen view available. \033[4A");
-    } while (reservation->room_p == NULL);
-    add_reservation(reservation);
+        }
+    }
 }

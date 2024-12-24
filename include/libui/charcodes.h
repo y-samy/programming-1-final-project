@@ -18,7 +18,10 @@
 #define CLR_RESET "\033[0m"
 
 #define CTRL_C_KEY 3
+#define CTRL_D_KEY 4
+
 #define ESC_KEY 27
+
 #define BACKSPACE_KEY 8
 #define DEL_KEY 127
 
