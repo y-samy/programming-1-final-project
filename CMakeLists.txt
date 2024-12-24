@@ -49,4 +49,8 @@ add_executable(hotel src/main.c
         src/ui/menus/check_out.h
 )
 
-target_link_libraries(hotel m)
+target_link_libraries(hotel)
+
+if (CMAKE_C_COMPILER_ID MATCHES "GNU|Clang|Intel")
+    target_link_libraries(hotel m)
+endif ()
