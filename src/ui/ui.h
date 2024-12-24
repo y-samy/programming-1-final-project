@@ -9,3 +9,4 @@
 #include "menus/cancel_reservation.h"
 #include "menus/status.h"
 #include "menus/view_customer_details.h"
+#include "menus/query.h"

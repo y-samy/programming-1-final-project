@@ -255,3 +255,20 @@ room_t *get_room_by_id(HotelSession *hotel_session, int id)
     }
     return NULL;
 }
+
+room_t *get_room_by_customer_name(HotelSession *session, char *name)
+{
+    static HotelSession *internal_session = NULL;
+    static size_t i = 0;
+    if (session != NULL) {
+        internal_session = session;
+        i = 0;
+    }
+    while (i < internal_session->rooms_count) {
+        if (internal_session->rooms_p[i].reserved && strstr(internal_session->rooms_p[i].reservation.customer.name,name) != NULL) {
+            return &internal_session->rooms_p[i++];
+        }
+        i++;
+    }
+    return NULL;
+}

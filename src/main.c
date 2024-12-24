@@ -49,6 +49,8 @@ int main()
             view_customer_details(hotel_session);
         if (response == 7)
             edit_reservation_menu(hotel_session);
+        if (response == 8)
+            query_menu(hotel_session); 
     }
 
 }
