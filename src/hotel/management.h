@@ -53,4 +53,4 @@ int get_room_id(room_t *room);
 int get_price_per_night(room_t *room);
 
 
-customer_t *get_customer_by_name(HotelSession *session, char *name);
+room_t *get_room_by_customer_name(HotelSession *session, char *name);
