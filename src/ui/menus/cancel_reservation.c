@@ -2,7 +2,7 @@
 
 #include <stdlib.h>
 #include <libui/io.h>
-#include <management/reservations.h>
+#include <management.h>
 
 #define MENU_STATIC \
     "CANCEL RESERVATION\n"\
