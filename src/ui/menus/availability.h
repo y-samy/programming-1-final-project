@@ -1,4 +1,4 @@
 #pragma once
-#include <management/rooms.h>
+#include <management.h>
 
-int availability_menu();
+int availability_menu(HotelSession *session);

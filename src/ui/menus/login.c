@@ -1,41 +1,58 @@
 #include "login.h"
+#include "status.h"
 #include <libui/io.h>
 
 #define MENU_STATIC\
  "LOGIN\n"\
- "-----\n"\
- PROMPT_CANCEL_KEY_S\
- " Go Back\n\n"
+ "-----\n\n"
 
-int login_menu(user_t *user)
+#define PASSWORD_ATTEMPTS 3
+
+int login_menu(LoginSession *session)
 {
-    while (!is_logged_in(user)) {
-        display_menu(MENU_STATIC);
-        char username[USERNAME_LEN];
-        char password[PASSWORD_LEN];
+    display_menu(MENU_STATIC);
+    char username[USERNAME_LEN] = {0};
+    char password[PASSWORD_LEN] = {0};
+    while (!is_logged_in(session)) {
         bool input_valid = false;
+        int input_status;
         int input_attempts = 0;
         do {
-            if (input(username,  CLEAR_LN "Username: ", USERNAME_LEN, INPUT_USERNAME) == IO_STATUS_ESC)
-                return;
-            if (!(input_valid = verify_username(user, username))) {
-                printf(
-                    CUR_DOWN CLEAR_LN CLR_BG_YLW "User " CLR_TEXT_RED "%s" CLR_RESET CLR_BG_YLW " not found!" CLR_RESET
+            input_status = input(username, "Username: ", USERNAME_LEN, INPUT_USERNAME, true);
+            if (input_status == IO_STATUS_UNDO) {
+                username[0] = '\0';
+                continue;
+            }
+            if (input_status == IO_STATUS_ESC)
+                return MENU_SIGNAL_CANCEL;
+            if (input_status == IO_STATUS_EXIT)
+                return MENU_SIGNAL_EXIT;
+            if (!((input_valid = verify_username(session, username)))) {
+                printf(CLEAR_LN ERROR_HIGHLIGHT "User " CLR_TEXT_BLACK "%s" CLR_RESET ERROR_HIGHLIGHT " not found!" CLR_RESET
                     CUR_UP "\r", username);
             }
-            input_attempts = 1;
         } while (!input_valid);
-        printf(CUR_UP CUR_UP CLEAR_LN PROMPT_CANCEL_KEY_S " Cancel" "\033[3B" CLEAR_LN);
         input_valid = false;
         input_attempts = 0;
+        printf(CLEAR_LN);
         do {
-            if (input(password, CLEAR_LN "Password: ", PASSWORD_LEN, INPUT_PASSWORD) != EXIT_SUCCESS)
-                break; /* using break; instead of return; to reprompt for password when ESC is pressed */
-            if (!(input_valid = verify_password(user, password))) {
-                printf(CUR_DOWN CLEAR_LN CLR_BG_YLW "Incorrect password! %d of %d attempts." CLR_RESET CUR_UP "\r", input_attempts + 1, PASSWORD_ATTEMPTS);
+            input_status = input(password, "Password: ", PASSWORD_LEN, INPUT_PASSWORD, false);
+            if (input_status == IO_STATUS_UNDO) {
+                password[0] = '\0';
+                continue;
+            }
+            if (input_status == IO_STATUS_ESC)
+                return MENU_SIGNAL_CANCEL;
+            if (input_status == IO_STATUS_EXIT)
+                return MENU_SIGNAL_EXIT;
+            if (!((input_valid = verify_password(session, password)))) {
+                printf(CLEAR_LN ERROR_HIGHLIGHT "Incorrect password! %d of %d attempts." CLR_RESET CUR_UP CLEAR_LN, input_attempts + 1, PASSWORD_ATTEMPTS);
+                password[0] = '\0';
             }
             input_attempts++;
         } while (!input_valid && input_attempts < PASSWORD_ATTEMPTS);
+        if (!input_valid)
+            return MENU_SIGNAL_EXIT;
     }
-    return LOGIN_SUCCES;
+    return MENU_SIGNAL_PROCEED;
 }

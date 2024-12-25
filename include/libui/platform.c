@@ -17,6 +17,8 @@ void clear_screen(void)
 int get_key(void)
 {
     int c = _getch();
+    if (c == '\r')
+        return '\n';
     if (c == 0 || c == 0xE0) {
         c = _getch();
         switch (c) {
@@ -59,15 +61,15 @@ void clear_screen(void)
 int termios_echo(bool state)
 {
     /* https://stackoverflow.com/a/32421674 */
-    static struct termios old_kbd_mode;    /* orig keyboard settings   */
+    static struct termios old_kbd_mode;
     static struct termios new_kbd_mode;
     if (!state) {
-        if (tcgetattr (0, &old_kbd_mode)) { /* save orig settings   */
+        if (tcgetattr (0, &old_kbd_mode)) {
             fprintf (stderr, "%s() error: tcgetattr failed.\n", __func__);
         }
         memcpy (&new_kbd_mode, &old_kbd_mode, sizeof(struct termios));
 
-        new_kbd_mode.c_lflag &= ~(ICANON | ECHO);  /* new kbd flags */
+        new_kbd_mode.c_lflag &= ~(ICANON | ECHO | ISIG | ICRNL | IXON);
         new_kbd_mode.c_cc[VTIME] = 0;
         new_kbd_mode.c_cc[VMIN] = 1;
         if (tcsetattr (0, TCSANOW, &new_kbd_mode)) {

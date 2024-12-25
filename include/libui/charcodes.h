@@ -1,6 +1,6 @@
 #pragma once
 
-#define CLEAR_LN "\33[2K\r"
+#define CLEAR_LN "\033[2K\r"
 #define CUR_UP "\033[A"
 #define CUR_DOWN "\033[B"
 #define CUR_ORIGIN "\033[1;1H"
@@ -11,6 +11,8 @@
 #define CLR_TEXT_RED "\033[31m"
 #define CLR_TEXT_GREEN "\033[32m"
 #define CLR_TEXT_BLACK "\033[30m"
+#define CLR_TEXT_WHITE "\033[37m"
+#define CLR_BG_WHITE "\033[47m"
 #define CLR_BG_RED "\033[41m"
 #define CLR_BG_GREEN "\033[42m"
 #define CLR_BG_CYAN "\033[46m"
@@ -18,7 +20,11 @@
 #define CLR_RESET "\033[0m"
 
 #define CTRL_C_KEY 3
+#define CTRL_D_KEY 4
+#define CTRL_Z_KEY 26
+
 #define ESC_KEY 27
+
 #define BACKSPACE_KEY 8
 #define DEL_KEY 127
 
