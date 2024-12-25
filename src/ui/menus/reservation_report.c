@@ -46,7 +46,7 @@ int reservation_report(HotelSession *session)
                 room = get_room_by_checkin_date(NULL, search_date);
             }
 
-            choice = choices("Create another report\nMain menu\nExit");
+            choice = choices("Create another report\nMain menu\nExit\n");
             if (choice == IO_STATUS_UNDO || choice == 1)
                 stage = 1;
 
