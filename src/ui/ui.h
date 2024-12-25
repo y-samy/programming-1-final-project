@@ -10,3 +10,4 @@
 #include "menus/status.h"
 #include "menus/view_customer_details.h"
 #include "menus/query.h"
+#include "menus/reservation_report.h"
