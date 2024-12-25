@@ -19,6 +19,7 @@
 
 #define CTRL_C_KEY 3
 #define CTRL_D_KEY 4
+#define CTRL_Z_KEY 26
 
 #define ESC_KEY 27
 

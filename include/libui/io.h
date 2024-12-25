@@ -19,6 +19,7 @@
 
 #define IO_STATUS_ESC -ESC_KEY
 #define IO_STATUS_EXIT -CTRL_C_KEY
+#define IO_STATUS_UNDO -CTRL_Z_KEY
 
 
 #ifdef _WIN32
