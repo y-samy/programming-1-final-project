@@ -22,29 +22,64 @@ int edit_reservation_menu(HotelSession *session)
     reservation_t new_reservation;
     int old_room_id;
     int choice;
-    char buffer[50];
+    char id_buffer[11] = {0};
+    char nights_count_buffer[11] = {0};
+    int stage = 1;
+    int id_type = 1;
     while (1) {
-        display_menu(MENU_STATIC);
-        choice = choices(MENU_CHOICES);
-        if (choice == IO_STATUS_EXIT)
-            return MENU_SIGNAL_EXIT;
-        if (choice == IO_STATUS_ESC)
-            return MENU_SIGNAL_CANCEL;
-        if (choice == 1) {
-            choice = input(buffer, "\nRoom Number: ", 10, INPUT_INT_POSITIVE, false);
-            int id = atoi(buffer);
-            room_t *room = get_room_by_id(session, id);
-            if (room->reserved) {
-                new_reservation = room->reservation;
-                old_room_id = room->id;
-            }
+        while (stage == 1) {
+            display_menu(MENU_STATIC);
+            choice = choices(MENU_CHOICES);
+            if (choice == IO_STATUS_EXIT)
+                return MENU_SIGNAL_EXIT;
+            if (choice == IO_STATUS_ESC)
+                return MENU_SIGNAL_CANCEL;
+            if (choice == IO_STATUS_UNDO)
+                continue;
+            stage++;
+            id_type = choice;
         }
-        if (choice == 2) {
-            choice = input(buffer, "\nReservation ID: ", 10, INPUT_INT_POSITIVE, false);
-            int id = atoi(buffer);
-            room_t *old_room = get_room_by_reservation(session, get_reservation_by_id(session, id));
-            old_room_id = old_room->id;
-            new_reservation = old_room->reservation;
+        while (stage == 2) {
+            if (id_type == 1) {
+                choice = input(id_buffer, "\nRoom Number: ", 10, INPUT_INT_POSITIVE, true);
+                if (choice == IO_STATUS_UNDO && id_buffer[0] == '\0') {
+                    stage--;
+                    break;
+                }
+                if (choice == IO_STATUS_UNDO) {
+                    id_buffer[0] = '\0';
+                    continue;
+                }
+                if (choice == IO_STATUS_ESC)
+                    return MENU_SIGNAL_CANCEL;
+                if (choice == IO_STATUS_EXIT)
+                    return MENU_SIGNAL_EXIT;
+                int id = atoi(id_buffer);
+                room_t *room = get_room_by_id(session, id);
+                if (room->reserved) {
+                    new_reservation = room->reservation;
+                    old_room_id = room->id;
+                }
+            }
+            if (id_type == 2) {
+                choice = input(id_buffer, "\nReservation ID: ", 10, INPUT_INT_POSITIVE, true);
+                if (choice == IO_STATUS_UNDO && id_buffer[0] == '\0') {
+                    stage--;
+                    break;
+                }
+                if (choice == IO_STATUS_UNDO) {
+                    id_buffer[0] = '\0';
+                    continue;
+                }
+                if (choice == IO_STATUS_ESC)
+                    return MENU_SIGNAL_CANCEL;
+                if (choice == IO_STATUS_EXIT)
+                    return MENU_SIGNAL_EXIT;
+                int id = atoi(id_buffer);
+                room_t *old_room = get_room_by_reservation(session, get_reservation_by_id(session, id));
+                old_room_id = old_room->id;
+                new_reservation = old_room->reservation;
+            }
         }
         choice = input(new_reservation.customer.name, "\nCustomer name: ", 100, INPUT_ALPHABETICAL, true);
         if (choice == IO_STATUS_EXIT)
@@ -66,13 +101,13 @@ int edit_reservation_menu(HotelSession *session)
 
         putchar('\n');
         input_date(&new_reservation.date, &new_reservation.date);
-        sprintf(buffer, "%d", new_reservation.nights_count);
-        choice = input(buffer, "\nNumber of nights: ", 3, INPUT_INT_POSITIVE, true);
+        sprintf(nights_count_buffer, "%d", new_reservation.nights_count);
+        choice = input(nights_count_buffer, "\nNumber of nights: ", 3, INPUT_INT_POSITIVE, true);
         if (choice == IO_STATUS_EXIT)
             return MENU_SIGNAL_EXIT;
         if (choice == IO_STATUS_ESC)
             continue;
-        new_reservation.nights_count = atoi(buffer);
+        new_reservation.nights_count = atoi(nights_count_buffer);
         new_reservation.checked_in = false;
         putchar('\n');
         while (1) {

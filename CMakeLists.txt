@@ -40,6 +40,10 @@ add_executable(hotel src/main.c
 
         include/libdate.c
         include/libdate.h
+        
+        src/ui/menus/reservation_report.c
+        src/ui/menus/reservation_report.h
+
 
         include/libparse.c
         include/libparse.h
@@ -47,10 +51,6 @@ add_executable(hotel src/main.c
         src/ui/menus/edit_reservation.h
         src/ui/menus/check_out.c
         src/ui/menus/check_out.h
-        src/ui/menus/reservation_report.c
-        src/ui/menus/reservation_report.h
-
-
 )
 
 target_link_libraries(hotel)

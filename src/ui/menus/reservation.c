@@ -24,7 +24,6 @@ int reserve_room(HotelSession *session)
     struct tm current_date = get_current_date();
     reservation.date = current_date;
     room_t *available_room = NULL;
-
     while (1) {
         while (stage == 1) {
             display_menu(MENU_STATIC);

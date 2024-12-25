@@ -352,11 +352,22 @@ int choices(char *choices)
                    choice_i[current_choice - 1],
                    choice_i[current_choice - 2]);
             current_choice--;
-        } else if (c == ARR_DOWN_KEY && current_choice < choice_count) {
+        }
+        else if (c == ARR_DOWN_KEY && current_choice < choice_count) {
             printf(CLEAR_LN CLR_RESET "%s" CUR_DOWN CLEAR_LN SELECTION_HIGHLIGHT ">%s" CLR_RESET,
                    choice_i[current_choice - 1],
                    choice_i[current_choice]);
             current_choice++;
+        }
+        else if (c == ARR_UP_KEY && current_choice == 1) {
+            printf(CLEAR_LN CLR_RESET "%s\033[%dB" CLEAR_LN SELECTION_HIGHLIGHT ">%s" CLR_RESET, choice_i[current_choice - 1]
+                , choice_count-1, choice_i[choice_count-1]);
+            current_choice = choice_count;
+        }
+        else if (c == ARR_DOWN_KEY && current_choice == choice_count) {
+            current_choice = 1;
+            printf(CLEAR_LN CLR_RESET "%s\033[%dA" CLEAR_LN SELECTION_HIGHLIGHT ">%s" CLR_RESET, choice_i[choice_count-1]
+                , choice_count-1, choice_i[current_choice - 1]);
         }
     }
 }

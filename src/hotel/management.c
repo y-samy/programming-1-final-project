@@ -1,7 +1,6 @@
 #include "management.h"
 #include <math.h>
 
-
 #include <libparse.h>
 #include <string.h>
 
@@ -59,6 +58,7 @@ void init_management_session(HotelSession **session_p)
                    reservation.customer.email, reservation.customer.phoneNum);
             reservation.date.tm_year -= 1900;
             reservation.date.tm_mon -= 1;
+            mktime(&reservation.date);
             reservation.checked_in = !(strcmp(status_buf, "confirmed")) ? true : false;
             reservation.reservation_id = reservation_id_buffer;
             rooms_list[j].reservation = reservation;
