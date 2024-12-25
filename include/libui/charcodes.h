@@ -12,6 +12,7 @@
 #define CLR_TEXT_GREEN "\033[32m"
 #define CLR_TEXT_BLACK "\033[30m"
 #define CLR_TEXT_WHITE "\033[37m"
+#define CLR_BG_WHITE "\033[47m"
 #define CLR_BG_RED "\033[41m"
 #define CLR_BG_GREEN "\033[42m"
 #define CLR_BG_CYAN "\033[46m"
