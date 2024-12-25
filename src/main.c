@@ -97,6 +97,12 @@ int main()
                 if (response == MENU_SIGNAL_EXIT)
                     exit_routine(login_session, hotel_session);
                 break;
+            
+            case 9:
+                response = reservation_report(hotel_session);
+                if (response == MENU_SIGNAL_EXIT)
+                    exit_routine(login_session, hotel_session);
+                break;
         }
     }
 }

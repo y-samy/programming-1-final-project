@@ -40,6 +40,10 @@ add_executable(hotel src/main.c
 
         include/libdate.c
         include/libdate.h
+        
+        src/ui/menus/reservation_report.c
+        src/ui/menus/reservation_report.h
+
 
         include/libparse.c
         include/libparse.h

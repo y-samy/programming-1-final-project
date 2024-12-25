@@ -1,4 +1,5 @@
 #include "management.h"
+#include <math.h>
 
 #include <libparse.h>
 #include <string.h>
@@ -267,6 +268,24 @@ room_t *get_room_by_customer_name(HotelSession *session, char *name)
     }
     while (i < internal_session->rooms_count) {
         if (internal_session->rooms_p[i].reserved && strstr(internal_session->rooms_p[i].reservation.customer.name,name) != NULL) {
+            return &internal_session->rooms_p[i++];
+        }
+        i++;
+    }
+    return NULL;
+}
+
+
+room_t *get_room_by_checkin_date(HotelSession *session, struct tm date)
+{
+    static HotelSession *internal_session = NULL;
+    static size_t i = 0;
+    if (session != NULL) {
+        internal_session = session;
+        i = 0;
+    }
+    while (i < internal_session->rooms_count) {
+        if (internal_session->rooms_p[i].reserved && abs(difftime(mktime(&date),mktime(&internal_session->rooms_p[i].reservation.date))) < 86400) {
             return &internal_session->rooms_p[i++];
         }
         i++;
