@@ -138,7 +138,7 @@ int input_date(struct tm *base_date, struct tm *date_buffer)
 
 int input(char *buffer, char *prompt_s, int max_size, int input_type, bool edit)
 {
-    printf("%s", prompt_s);
+    printf(CLEAR_LN "%s", prompt_s);
     fflush(stdout);
     echo_t echo_mode = ECHO_THRU;
     if (input_type == INPUT_PASSWORD)
