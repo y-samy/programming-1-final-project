@@ -12,11 +12,24 @@ A basic hotel reservation system made purely in C with the help of standard libr
 
 ## Project Details
 
-**Instructions & Givens**
-- All database files will be given and guaranteed to be valid.
+### Givens & Expectations
+Extra additions and clarifications to the provided project instructions & requirements.
 
-**Technical Details**
-- All user input will be validated as it is being typed, and verified after it is entered.
+**This program expects**:
+- being run on a single thread - uses non-re-entrant functions, provides no measures against data-races
+- being compiled for a Unix(-like) or Windows environment
+- being run from a VT100 compatible terminal emulator
+- only one instance/ process of itself running from per directory
+- all files are present in the same directory as the executable file
+- all files are accessible to the user or process with no external locks (advisory or not) on the file
+- all files' contents are valid and contain no conflicting or nonsensical information
+
+**The user expects**
+- being able to undo any previous action *or* return to a previous menu with keyboard shortcuts for either
+- input being validated as it is being typed, and verified after it is entered
+- only one reservation per room
+- the program picks the first available room for the user based on the inputted criteria as per the instructions
+- the program will write all the data to the files as it exits
 
 ## Contributors
 [David Michael](https://github.com/davidyassa)
@@ -53,15 +66,19 @@ As much of the code as possible should be in ASCII, and most of the elements of 
 
 #### Structures
 **ONLY** `typedef` a `struct` **IF YOU WILL ABSTRACT AWAY ALL ACCESS TO ITS MEMBERS WITH (SETTERS/ GETTERS)-LIKE FUNCTIONS**.
+
+You may use `TitleCase` or `lower_snake_t` for a `typedef`ed `struct`.
+
 General example: `stdio.h`'s `FILE` and its functions (`fopen()`, `fgets()`, etc)
-In-code example: `login.h`'s `user_t` and its functions (`user_session()`, `is_loggedin()`, etc)
+
+In-code example: `management.h`'s `room_t` and its functions (`get_price_per_night()`)
 
 #### Type Indication
 For identifiers with an ambiguous type, you should add a postfix indicating the type. For example:
 - `NEWLINE_C` instead of `NEWLINE` for a macro of type `char`
 - `size_t` instead of `size` for a `typedef`
 - `int *arr` instead of `int* arr` when declaring pointers
-- `*student_name` instead of `*student_name_c` for a string variable pointing to a name; it is self-explanatory
+- `*student_name` instead of `*student_name_s` for a string variable pointing to a name; it is self-explanatory
 
 ### Indentation
 Strictly use the space character instead of the tab character. Your IDE can be configured to insert spaces when the TAB key is pressed.
