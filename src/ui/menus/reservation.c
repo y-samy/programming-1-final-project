@@ -7,7 +7,7 @@
 
 #define MENU_STATIC \
 "RESERVATION\n"\
-"---------\n\n"
+"-----------\n\n"
 
 #define CATEGORY_CHOICES \
 "Sea View\n" \
