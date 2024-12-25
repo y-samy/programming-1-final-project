@@ -51,7 +51,8 @@ int login_menu(LoginSession *session)
             }
             input_attempts++;
         } while (!input_valid && input_attempts < PASSWORD_ATTEMPTS);
-        return MENU_SIGNAL_EXIT;
+        if (!input_valid)
+            return MENU_SIGNAL_EXIT;
     }
     return MENU_SIGNAL_PROCEED;
 }
