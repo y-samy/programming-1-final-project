@@ -40,6 +40,7 @@ static void set_echo(echo_mode mode)
 
 void display_menu(char *menu)
 {
+    fflush(stdout);
     clear_screen();
     printf("%s", menu);
 }
