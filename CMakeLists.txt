@@ -6,6 +6,7 @@ include_directories(include src/ui src/hotel)
 
 add_executable(hotel src/main.c
         src/hotel/login.c
+
         src/hotel/login.h
         src/hotel/management.c
         src/hotel/management.h

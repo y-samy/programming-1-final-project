@@ -8,7 +8,6 @@
     "RESERVATION REPORT \n" \
     "------------------\n\n"
 
-
 int reservation_report(HotelSession *session)
 {
     int choice;
@@ -23,6 +22,18 @@ int reservation_report(HotelSession *session)
         while (stage == 1){
             printf("Choose reservation date: \n");
             choice = input_date(&current_date, &search_date);
+
+            if (choice == IO_STATUS_UNDO)
+            {
+                current_date = search_date;
+                continue;
+            }
+
+            if (choice == IO_STATUS_ESC)
+                return MENU_SIGNAL_CANCEL;
+
+            if (choice == IO_STATUS_EXIT)
+                return MENU_SIGNAL_EXIT;
 
             room = get_room_by_checkin_date(session, search_date);
 
