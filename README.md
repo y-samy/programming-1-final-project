@@ -13,7 +13,7 @@ A basic hotel reservation system made purely in C with the help of standard libr
 ## Project Details
 
 ### Givens & Expectations
-You may find the original instructions PDF by the TA [here](https://github.com/y-samy/programming-1-final-project/blob/main/Instructions.pdf), though it contains unclear instructions.
+You may find the original instructions PDF by the TA [here](Instructions.pdf), though it contains unclear instructions.
 
 Extra additions and clarifications to the provided project instructions & requirements.
 
