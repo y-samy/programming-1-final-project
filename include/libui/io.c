@@ -49,8 +49,6 @@ static const char *month_names[] = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "J
 
 int input_date(struct tm *base_date, struct tm *date_buffer)
 {
-    printf("Pick a day\n");
-    fflush(stdout);
     set_echo(ECHO_OFF);
     struct tm current_date = get_current_date();
     *date_buffer = (difftime(mktime(&current_date), mktime(base_date)) > 0) ? current_date : *base_date;
@@ -280,11 +278,11 @@ int choices(char *choices)
         if (choices[i++] == '\n')
             choice_count++;
     }
-    char *_choices_s = malloc(sizeof(char) * (i + 1));
-    strcpy(_choices_s, choices);
+    char *choices_s = malloc(sizeof(char) * (i + 1));
+    strcpy(choices_s, choices);
     char **choice_i = malloc(sizeof(char *) * choice_count);
     char *_token = NULL;
-    _token = strtok(_choices_s, "\n");
+    _token = strtok(choices_s, "\n");
     i = 0;
     while (_token != NULL) {
         choice_i[i++] = _token;
@@ -304,10 +302,10 @@ int choices(char *choices)
                 printf(CUR_DOWN);
             }
             for (i = 1; i < choice_count; ++i) {
-                printf(CLEAR_LN CUR_UP);
+                printf(CLEAR_LN CUR_UP CLEAR_LN);
             }
             set_echo(ECHO_ON);
-            free(_choices_s);
+            free(choices_s);
             free(choice_i);
             return IO_STATUS_ESC;
         }
@@ -316,10 +314,10 @@ int choices(char *choices)
                 printf(CUR_DOWN);
             }
             for (i = 1; i < choice_count; ++i) {
-                printf(CLEAR_LN CUR_UP);
+                printf(CLEAR_LN CUR_UP CLEAR_LN);
             }
             set_echo(ECHO_ON);
-            free(_choices_s);
+            free(choices_s);
             free(choice_i);
             return IO_STATUS_UNDO;
         }
@@ -328,18 +326,24 @@ int choices(char *choices)
                 printf(CUR_DOWN);
             }
             for (i = 1; i < choice_count; ++i) {
-                printf(CLEAR_LN CUR_UP);
+                printf(CLEAR_LN CUR_UP CLEAR_LN);
             }
             set_echo(ECHO_ON);
-            free(_choices_s);
+            free(choices_s);
             free(choice_i);
             return IO_STATUS_EXIT;
         }
         if ((c == '\n' || c == '\r')) {
+            for (i = current_choice; i < choice_count; ++i) {
+                printf(CUR_DOWN);
+            }
+            for (i = 1; i < choice_count; ++i) {
+                printf(CLEAR_LN CUR_UP CLEAR_LN);
+            }
+            printf("%s", choice_i[current_choice-1]);
             set_echo(ECHO_ON);
-            free(_choices_s);
+            free(choices_s);
             free(choice_i);
-            printf("\033[%dB", choice_count - current_choice + 1);
             return current_choice;
         }
         if (c == ARR_UP_KEY && current_choice > 1) {
