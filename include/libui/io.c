@@ -78,16 +78,22 @@ int input_date(struct tm *base_date, struct tm *date_buffer)
         switch (c) {
             case '\n':
             case '\r':
-                printf(CLEAR_LN CLR_RESET "%02d / %s / %d", date_buffer->tm_mday,
+                printf(CLEAR_LN CLR_RESET "%02d / %s / %d\n", date_buffer->tm_mday,
                        month_names[date_buffer->tm_mon], date_buffer->tm_year + 1900);
                 set_echo(ECHO_ON);
                 return 0;
+            case CTRL_Z_KEY:
+                printf(CLEAR_LN);
+                set_echo(ECHO_ON);
+                return IO_STATUS_UNDO;
             case ESC_KEY:
+                printf(CLEAR_LN);
                 set_echo(ECHO_ON);
                 return IO_STATUS_ESC;
             case CTRL_C_KEY:
             case CTRL_D_KEY:
             case EOF:
+                printf(CLEAR_LN);
                 set_echo(ECHO_ON);
                 return IO_STATUS_EXIT;
             case ARR_RIGHT_KEY:
@@ -164,17 +170,25 @@ int input(char *buffer, char *prompt_s, int max_size, int input_type, bool edit)
     while (true) {
         c = get_key(); /* does not print what you type */
         if (c == ESC_KEY) {
+            printf(CLEAR_LN);
             set_echo(ECHO_ON);
             return IO_STATUS_ESC;
         }
+        if (c == CTRL_Z_KEY) {
+            printf(CLEAR_LN);
+            set_echo(ECHO_ON);
+            return IO_STATUS_UNDO;
+        }
         if (c == EOF || c == CTRL_C_KEY || c == CTRL_D_KEY) {
+            printf(CLEAR_LN);
             set_echo(ECHO_ON);
             return IO_STATUS_EXIT;
         }
-        if ((c == '\n' || c == '\r') && i > 0) {
+        if (c == '\n' && i > 0) {
             if (input_type == INPUT_EMAIL && (email_at_i == -1 || email_dot_i == -1 || buffer[i - 1] == '@' || buffer[
                                                   i - 1] == '.' || buffer[i - 2] == '.'))
                 continue;
+            putchar('\n');
             break;
         }
         if ((c == BACKSPACE_KEY || c == DEL_KEY) && i > 0) {
@@ -283,14 +297,39 @@ int choices(char *choices)
     printf("\033[%dA", choice_count);
     char c;
     while (1) {
+        int i;
         c = get_key();
         if (c == ESC_KEY) {
+            for (; current_choice < choice_count; ++current_choice) {
+                printf(CUR_DOWN);
+            }
+            for (i = 1; i < choice_count; ++i) {
+                printf(CLEAR_LN CUR_UP);
+            }
             set_echo(ECHO_ON);
             free(_choices_s);
             free(choice_i);
             return IO_STATUS_ESC;
         }
+        if (c == CTRL_Z_KEY) {
+            for (; current_choice < choice_count; ++current_choice) {
+                printf(CUR_DOWN);
+            }
+            for (i = 1; i < choice_count; ++i) {
+                printf(CLEAR_LN CUR_UP);
+            }
+            set_echo(ECHO_ON);
+            free(_choices_s);
+            free(choice_i);
+            return IO_STATUS_UNDO;
+        }
         if (c == EOF || c == CTRL_C_KEY || c == CTRL_D_KEY) {
+            for (; current_choice < choice_count; ++current_choice) {
+                printf(CUR_DOWN);
+            }
+            for (i = 1; i < choice_count; ++i) {
+                printf(CLEAR_LN CUR_UP);
+            }
             set_echo(ECHO_ON);
             free(_choices_s);
             free(choice_i);

@@ -22,6 +22,7 @@
 #define IO_STATUS_UNDO -CTRL_Z_KEY
 
 
+#define PROMPT_UNDO_KEY_S "[CTRL-Z]"
 #ifdef _WIN32
 #define PROMPT_CANCEL_KEY_S "[ESC]"
 #else

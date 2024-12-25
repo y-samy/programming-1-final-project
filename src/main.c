@@ -17,16 +17,22 @@ int main()
     init_management_session(&hotel_session);
     int response;
     while (1) {
-        response = root_menu();
-        if (response == MENU_SIGNAL_EXIT)
-            exit_routine(login_session, hotel_session);
+        /*
+         * If not logged in:
+         * Choose: Login/ Exit
+         * If cancelled @ login, choose again
+         */
+        if (!is_logged_in(login_session)) {
+            response = root_menu();
+            if (response == MENU_SIGNAL_EXIT)
+                exit_routine(login_session, hotel_session);
 
-        response = login_menu(login_session);
-        if (response == MENU_SIGNAL_EXIT)
-            exit_routine(login_session, hotel_session);
-        if (response == MENU_SIGNAL_CANCEL)
-            continue;
-
+            response = login_menu(login_session);
+            if (response == MENU_SIGNAL_EXIT)
+                exit_routine(login_session, hotel_session);
+            if (response == MENU_SIGNAL_CANCEL)
+                continue;
+        }
 
         response = main_menu();
         if (response == MENU_SIGNAL_EXIT)
@@ -35,24 +41,64 @@ int main()
             logout(login_session);
             continue;
         }
-        if (response == 1)
-            reserve_room(hotel_session);
-        if (response == 2)
-            check_in(hotel_session);
-        if (response == 3)
-            cancel_reservation_menu(hotel_session);
-        if (response == 4)
-            check_out_menu(hotel_session);
-        if (response == 5)
-            availability_menu(hotel_session);
-        if (response == 6)
-            view_customer_details(hotel_session);
-        if (response == 7)
-            edit_reservation_menu(hotel_session);
-        if (response == 8)
-            query_menu(hotel_session); 
-    }
 
+        switch (response) {
+            case 1:
+                response = reserve_room(hotel_session);
+                if (response == MENU_SIGNAL_EXIT)
+                    exit_routine(login_session, hotel_session);
+                break;
+
+
+            case 2:
+                response = check_in(hotel_session);
+                if (response == MENU_SIGNAL_EXIT)
+                    exit_routine(login_session, hotel_session);
+                break;
+
+
+            case 3:
+                response = cancel_reservation_menu(hotel_session);
+                if (response == MENU_SIGNAL_EXIT)
+                    exit_routine(login_session, hotel_session);
+                break;
+
+
+            case 4:
+                response = check_out_menu(hotel_session);
+                if (response == MENU_SIGNAL_EXIT)
+                    exit_routine(login_session, hotel_session);
+                break;
+
+
+            case 5:
+                response = availability_menu(hotel_session);
+                if (response == MENU_SIGNAL_EXIT)
+                    exit_routine(login_session, hotel_session);
+                break;
+
+
+            case 6:
+                response = view_customer_details(hotel_session);
+                if (response == MENU_SIGNAL_EXIT)
+                    exit_routine(login_session, hotel_session);
+                break;
+
+
+            case 7:
+                response = edit_reservation_menu(hotel_session);
+                if (response == MENU_SIGNAL_EXIT)
+                    exit_routine(login_session, hotel_session);
+                break;
+
+            
+            case 8:
+                response = query_menu(hotel_session);
+                if (response == MENU_SIGNAL_EXIT)
+                    exit_routine(login_session, hotel_session);
+                break;
+        }
+    }
 }
 
 

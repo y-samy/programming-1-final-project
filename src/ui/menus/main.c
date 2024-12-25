@@ -26,7 +26,7 @@ int main_menu(void)
     while (1) {
         display_menu(MENU_STATIC);
         choice = choices(MENU_CHOICES);
-        if (choice == 10 || choice == IO_STATUS_ESC)
+        if (choice == 10 || choice == IO_STATUS_ESC || choice == IO_STATUS_UNDO)
             return MENU_SIGNAL_CANCEL;
         if (choice == 11 || choice == IO_STATUS_EXIT)
             return MENU_SIGNAL_EXIT;
