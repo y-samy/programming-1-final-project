@@ -17,69 +17,150 @@
 
 int reserve_room(HotelSession *session)
 {
-    reservation_t reservation = create_reservation();
-    display_menu(MENU_STATIC);
-    bool input_valid = 0;
-
-    char tmp[10];
+    int stage = 1;
     int choice;
+    reservation_t reservation = create_reservation();
+    char nights_count_buffer[10] = {0};
+    struct tm current_date = get_current_date();
+    reservation.date = current_date;
+    room_t *available_room = NULL;
     while (1) {
-        choice = input(reservation.customer.name, "Customer name: ", 100, INPUT_ALPHABETICAL, false);
-        if (choice == IO_STATUS_EXIT)
-            return MENU_SIGNAL_EXIT;
-        if (choice == IO_STATUS_ESC)
-            return MENU_SIGNAL_CANCEL;
-
-        choice = input(reservation.customer.nationalId, "\nCustomer national ID: ", 15, INPUT_INT_ANY, false);
-        if (choice == IO_STATUS_EXIT)
-            return MENU_SIGNAL_EXIT;
-        if (choice == IO_STATUS_ESC)
-            continue;
-
-        choice = input(reservation.customer.email, "\nCustomer email: ", 100, INPUT_EMAIL, false);
-        if (choice == IO_STATUS_EXIT)
-            return MENU_SIGNAL_EXIT;
-        if (choice == IO_STATUS_ESC)
-            continue;
-
-        choice = input(reservation.customer.phoneNum, "\nCustomer mobile number: ", 15, INPUT_INT_POSITIVE, false);
-        if (choice == IO_STATUS_EXIT)
-            return MENU_SIGNAL_EXIT;
-        if (choice == IO_STATUS_ESC)
-            continue;
-
-        putchar('\n');
-        struct tm current_date = get_current_date();
-        input_date(&current_date, &reservation.date);
-
-        choice = input(tmp, "\nNumber of nights: ", 3, INPUT_INT_POSITIVE, false);
-        if (choice == IO_STATUS_EXIT)
-            return MENU_SIGNAL_EXIT;
-        if (choice == IO_STATUS_ESC)
-            continue;
-        reservation.nights_count = atoi(tmp);
-        reservation.checked_in = false;
-        putchar('\n');
-        while (1) {
-            room_t *available_room = NULL;
-            printf(CLEAR_LN "Choose room Category:\n");
-            choice = choices(CATEGORY_CHOICES) - 1;
+        while (stage == 1) {
+            display_menu(MENU_STATIC);
+            choice = input(reservation.customer.name, "Customer name: ", 100, INPUT_ALPHABETICAL, true);
+            if (choice == IO_STATUS_UNDO) {
+                reservation.customer.name[0] = '\0';
+                continue;
+            }
             if (choice == IO_STATUS_EXIT)
                 return MENU_SIGNAL_EXIT;
             if (choice == IO_STATUS_ESC)
-                break;
-            if ((available_room = get_available_room_by_category(session, choice)) != NULL) {
-                int id = add_reservation(session, available_room, reservation);
-                clear_screen();
-                display_menu(MENU_STATIC);
-                printf("Reservation Succeeded\nYour reservation ID: %d\n", id);
-                choice = choices("Main Menu\nExit\n");
-                if (choice == IO_STATUS_ESC || choice == 1)
-                    return MENU_SIGNAL_PROCEED;
-                if (choice == IO_STATUS_EXIT || choice == 2)
-                    return MENU_SIGNAL_EXIT;
+                return MENU_SIGNAL_CANCEL;
+            stage++;
+        }
+        while (stage == 2) {
+            choice = input(reservation.customer.nationalId, "Customer national ID: ", 15, INPUT_INT_ANY, true);
+            if (choice == IO_STATUS_UNDO && reservation.customer.nationalId[0] != '\0') {
+                reservation.customer.nationalId[0] = '\0';
+                continue;
             }
-            printf(CLEAR_LN "Sorry, there is no room with the chosen view available. \033[4A");
+            if (choice == IO_STATUS_UNDO) {
+                printf(CUR_UP);
+                stage--;
+                break;
+            }
+            if (choice == IO_STATUS_EXIT)
+                return MENU_SIGNAL_EXIT;
+            if (choice == IO_STATUS_ESC)
+                return MENU_SIGNAL_CANCEL;
+            stage++;
+        }
+        while (stage == 3) {
+            choice = input(reservation.customer.email, "Customer email: ", 100, INPUT_EMAIL, true);
+            if (choice == IO_STATUS_UNDO && reservation.customer.email[0] != '\0') {
+                reservation.customer.email[0] = '\0';
+                continue;
+            }
+            if (choice == IO_STATUS_UNDO) {
+                printf(CUR_UP);
+                stage--;
+                break;
+            }
+            if (choice == IO_STATUS_EXIT)
+                return MENU_SIGNAL_EXIT;
+            if (choice == IO_STATUS_ESC)
+                return MENU_SIGNAL_CANCEL;
+            stage++;
+        }
+        while (stage == 4) {
+            choice = input(reservation.customer.phoneNum, "Customer mobile number: ", 15, INPUT_INT_POSITIVE, true);
+            if (choice == IO_STATUS_UNDO && reservation.customer.phoneNum[0] != '\0') {
+                reservation.customer.phoneNum[0] = '\0';
+                continue;
+            }
+            if (choice == IO_STATUS_UNDO) {
+                printf(CUR_UP);
+                stage--;
+                break;
+            }
+            if (choice == IO_STATUS_EXIT)
+                return MENU_SIGNAL_EXIT;
+            if (choice == IO_STATUS_ESC)
+                return MENU_SIGNAL_CANCEL;
+            stage++;
+        }
+        while (stage == 5) {
+            printf("Choose reservation date: \n");
+            choice = input_date(&reservation.date, &reservation.date);
+            if (choice == IO_STATUS_UNDO && difftime(mktime(&reservation.date), mktime(&current_date)) > 0) {
+                reservation.date = current_date;
+                printf(CUR_UP);
+                continue;
+            }
+            if (choice == IO_STATUS_UNDO) {
+                printf(CUR_UP CLEAR_LN CUR_UP);
+                stage--;
+                break;
+            }
+            if (choice == IO_STATUS_EXIT)
+                return MENU_SIGNAL_EXIT;
+            if (choice == IO_STATUS_ESC)
+                return MENU_SIGNAL_CANCEL;
+            stage++;
+        }
+        while (stage == 6) {
+            choice = input(nights_count_buffer, "Number of nights: ", 3, INPUT_INT_POSITIVE, true);
+            if (choice == IO_STATUS_UNDO && nights_count_buffer[0] != '\0') {
+                nights_count_buffer[0] = '\0';
+                continue;
+            }
+            if (choice == IO_STATUS_UNDO) {
+                printf(CUR_UP CUR_UP);
+                stage--;
+                break;
+            }
+            if (choice == IO_STATUS_EXIT)
+                return MENU_SIGNAL_EXIT;
+            if (choice == IO_STATUS_ESC)
+                return MENU_SIGNAL_CANCEL;
+            stage++;
+            reservation.nights_count = atoi(nights_count_buffer);
+            reservation.checked_in = false;
+        }
+        while (stage == 7) {
+            printf(CLEAR_LN "Choose room Category:\n");
+            choice = choices(CATEGORY_CHOICES);
+            if (choice == IO_STATUS_EXIT)
+                return MENU_SIGNAL_EXIT;
+            if (choice == IO_STATUS_ESC)
+                return MENU_SIGNAL_CANCEL;
+            if (choice == IO_STATUS_UNDO) {
+                printf("\033[3B" CLEAR_LN "\033[4A" CLEAR_LN CUR_UP);
+                stage--;
+                break;
+            }
+            choice--;
+            if ((available_room = get_available_room_by_category(session, choice)) == NULL) {
+                printf(CLEAR_LN "Sorry, there is no room with the chosen view available. \033[4A");
+                continue;
+            }
+            stage++;
+        }
+        while (stage == 8) {
+            int id = add_reservation(session, available_room, reservation);
+            printf("\n\nReservation Succeeded\nYour reservation ID: %d\n\n", id);
+            choice = choices("Main Menu\nExit\n");
+            if (choice == IO_STATUS_UNDO) {
+                stage--;
+                cancel_reservation(session, id);
+                int i;
+                for (i = 0; i < 6; ++i)
+                    printf(CUR_UP CLEAR_LN);
+            }
+            if (choice == IO_STATUS_ESC || choice == 1)
+                return MENU_SIGNAL_PROCEED;
+            if (choice == IO_STATUS_EXIT || choice == 2)
+                return MENU_SIGNAL_EXIT;
         }
     }
 }

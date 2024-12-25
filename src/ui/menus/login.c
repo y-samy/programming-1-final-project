@@ -6,7 +6,7 @@
  "LOGIN\n"\
  "-----\n"\
  PROMPT_CANCEL_KEY_S\
- " Main Menu\n\n"
+ " Previous Menu\n\n"
 
 #define PASSWORD_ATTEMPTS 3
 
@@ -30,12 +30,11 @@ int login_menu(LoginSession *session)
             if (input_status == IO_STATUS_EXIT)
                 return MENU_SIGNAL_EXIT;
             if (!((input_valid = verify_username(session, username)))) {
-                printf(
-                    CUR_DOWN CLEAR_LN CLR_BG_YLW "User " CLR_TEXT_RED "%s" CLR_RESET CLR_BG_YLW " not found!" CLR_RESET
+                printf(CLEAR_LN CLR_BG_YLW "User " CLR_TEXT_RED "%s" CLR_RESET CLR_BG_YLW " not found!" CLR_RESET
                     CUR_UP "\r", username);
             }
         } while (!input_valid);
-        printf(CUR_UP CUR_UP CLEAR_LN PROMPT_UNDO_KEY_S " Cancel" "\033[3B" CLEAR_LN);
+        printf(CUR_UP CUR_UP CUR_UP CLEAR_LN PROMPT_UNDO_KEY_S " Cancel" CUR_DOWN CUR_DOWN CUR_DOWN CLEAR_LN);
         input_valid = false;
         input_attempts = 0;
         do {
@@ -53,7 +52,7 @@ int login_menu(LoginSession *session)
             if (input_status == IO_STATUS_EXIT)
                 return MENU_SIGNAL_EXIT;
             if (!((input_valid = verify_password(session, password)))) {
-                printf(CUR_DOWN CLEAR_LN CLR_BG_YLW "Incorrect password! %d of %d attempts." CLR_RESET CUR_UP "\r", input_attempts + 1, PASSWORD_ATTEMPTS);
+                printf(CLEAR_LN CLR_BG_YLW "Incorrect password! %d of %d attempts." CLR_RESET CUR_UP "\r", input_attempts + 1, PASSWORD_ATTEMPTS);
             }
             input_attempts++;
         } while (!input_valid && input_attempts < PASSWORD_ATTEMPTS);
