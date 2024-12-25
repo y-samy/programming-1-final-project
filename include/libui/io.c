@@ -5,9 +5,9 @@
 #include <string.h>
 
 
-typedef enum {ECHO_OFF, ECHO_THRU, ECHO_MASK, ECHO_ON} echo_mode;
+typedef enum {ECHO_OFF, ECHO_THRU, ECHO_MASK, ECHO_ON} echo_t;
 
-static void set_echo(echo_mode mode)
+static void set_echo(echo_t mode)
 {
     switch (mode) {
         case ECHO_OFF:
@@ -140,11 +140,11 @@ int input(char *buffer, char *prompt_s, int max_size, int input_type, bool edit)
 {
     printf("%s", prompt_s);
     fflush(stdout);
-    echo_mode local_echo_mode = ECHO_THRU;
+    echo_t echo_mode = ECHO_THRU;
     if (input_type == INPUT_PASSWORD)
-        local_echo_mode = ECHO_MASK;
+        echo_mode = ECHO_MASK;
     
-    set_echo(local_echo_mode);
+    set_echo(echo_mode);
 
     int i = 0;
     int c;
@@ -254,7 +254,7 @@ int input(char *buffer, char *prompt_s, int max_size, int input_type, bool edit)
         }
         if (input_valid) {
             /* Echo handling */
-            if (local_echo_mode == ECHO_THRU)
+            if (echo_mode == ECHO_THRU)
                 putchar(c);
             else /* Password hiding */
                 putchar('*');
