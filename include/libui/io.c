@@ -48,30 +48,33 @@ void display_menu(char *menu)
 
 static const char *month_names[] = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "SEP", "AUG", "OCT", "NOV", "DEC"};
 
-int input_date(struct tm *base_date, struct tm *date_buffer)
+int input_date(struct tm *date_buffer, struct tm *lower_bound, struct tm *upper_bound)
 {
     set_echo(ECHO_OFF);
-    struct tm current_date = get_current_date();
-    *date_buffer = (difftime(mktime(&current_date), mktime(base_date)) > 0) ? current_date : *base_date;
+    if (lower_bound != NULL && upper_bound != NULL && difftime(mktime(upper_bound), mktime(lower_bound)) < 0)
+        return IO_STATUS_ESC;
+    if (lower_bound != NULL && difftime(mktime(date_buffer), mktime(lower_bound)) < 0)
+        *date_buffer = *lower_bound;
+    if (upper_bound != NULL && difftime(mktime(date_buffer), mktime(upper_bound)) > 0)
+        *date_buffer = *upper_bound;
     struct tm temp_date = *date_buffer;
     int c;
     int current_choice = 0;
-
     while (1) {
         temp_date = *date_buffer;
         switch (current_choice) {
             case 0:
                 printf(CLEAR_LN SELECTION_HIGHLIGHT "%02d" CLR_RESET " / %s / %d", date_buffer->tm_mday,
                        month_names[date_buffer->tm_mon], date_buffer->tm_year + 1900);
-                break;
+            break;
             case 1:
                 printf(CLEAR_LN "%02d / " SELECTION_HIGHLIGHT "%s" CLR_RESET " / %d", date_buffer->tm_mday,
                        month_names[date_buffer->tm_mon], date_buffer->tm_year + 1900);
-                break;
+            break;
             case 2:
                 printf(CLEAR_LN "%02d / %s / " SELECTION_HIGHLIGHT "%d" CLR_RESET, date_buffer->tm_mday,
                        month_names[date_buffer->tm_mon], date_buffer->tm_year + 1900);
-                break;
+            break;
         }
         c = get_key();
         switch (c) {
@@ -79,59 +82,61 @@ int input_date(struct tm *base_date, struct tm *date_buffer)
             case '\r':
                 printf(CLEAR_LN CLR_RESET "%02d / %s / %d\n", date_buffer->tm_mday,
                        month_names[date_buffer->tm_mon], date_buffer->tm_year + 1900);
-                set_echo(ECHO_ON);
-                return 0;
+            set_echo(ECHO_ON);
+            return 0;
             case CTRL_Z_KEY:
                 printf(CLEAR_LN);
-                set_echo(ECHO_ON);
-                return IO_STATUS_UNDO;
+            set_echo(ECHO_ON);
+            return IO_STATUS_UNDO;
             case ESC_KEY:
                 printf(CLEAR_LN);
-                set_echo(ECHO_ON);
-                return IO_STATUS_ESC;
+            set_echo(ECHO_ON);
+            return IO_STATUS_ESC;
             case CTRL_C_KEY:
             case CTRL_D_KEY:
             case EOF:
                 printf(CLEAR_LN);
-                set_echo(ECHO_ON);
-                return IO_STATUS_EXIT;
+            set_echo(ECHO_ON);
+            return IO_STATUS_EXIT;
             case ARR_RIGHT_KEY:
                 if (current_choice < 2)
                     current_choice++;
-                break;
+            break;
             case ARR_LEFT_KEY:
                 if (current_choice > 0)
                     current_choice--;
-                break;
+            break;
             case ARR_DOWN_KEY:
                 switch (current_choice) {
                     case 0:
                         temp_date.tm_mday--;
-                        break;
+                    break;
                     case 1:
                         temp_date.tm_mon--;
-                        break;
+                    break;
                     case 2:
                         temp_date.tm_year--;
-                        break;
+                    break;
                 }
-                break;
+            break;
             case ARR_UP_KEY:
                 switch (current_choice) {
                     case 0:
                         temp_date.tm_mday++;
-                        break;
+                    break;
                     case 1:
                         temp_date.tm_mon++;
-                        break;
+                    break;
                     case 2:
                         temp_date.tm_year++;
-                        break;
+                    break;
                 }
-                break;
+            break;
         }
-        if (difftime(mktime(&current_date), mktime(&temp_date)) > 0 || temp_date.tm_year > current_date.tm_year + 100)
-            continue;
+        if (lower_bound != NULL && difftime(mktime(&temp_date), mktime(lower_bound)) < 0)
+            temp_date = *lower_bound;
+        if (upper_bound != NULL && difftime(mktime(&temp_date), mktime(upper_bound)) > 0)
+            temp_date = *upper_bound;
         *date_buffer = temp_date;
     }
 }

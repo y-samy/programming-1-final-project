@@ -35,7 +35,7 @@
 
 
 int input(char *buffer, char *prompt_s, int max_size, int input_type, bool edit);
-int input_date(struct tm *base_date, struct tm *date_buffer);
+int input_date(struct tm *date_buffer, struct tm *lower_bound, struct tm *upper_bound);
 int choices(char *choices);
 void display_menu(char *menu);
 void clear_screen(void);

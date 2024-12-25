@@ -91,7 +91,7 @@ int reserve_room(HotelSession *session)
         }
         while (stage == 5) {
             printf("Choose reservation date: \n");
-            choice = input_date(&reservation.date, &reservation.date);
+            choice = input_date(&reservation.date, &current_date, NULL);
             if (choice == IO_STATUS_UNDO && difftime(mktime(&reservation.date), mktime(&current_date)) > 0) {
                 reservation.date = current_date;
                 printf(CUR_UP);

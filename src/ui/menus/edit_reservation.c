@@ -26,6 +26,7 @@ int edit_reservation_menu(HotelSession *session)
     char nights_count_buffer[11] = {0};
     int stage = 1;
     int id_type = 1;
+    struct tm current_date = get_current_date();
     while (1) {
         while (stage == 1) {
             display_menu(MENU_STATIC);
@@ -100,7 +101,7 @@ int edit_reservation_menu(HotelSession *session)
             continue;
 
         putchar('\n');
-        input_date(&new_reservation.date, &new_reservation.date);
+        choice = input_date(&new_reservation.date, &current_date, NULL);
         sprintf(nights_count_buffer, "%d", new_reservation.nights_count);
         choice = input(nights_count_buffer, "\nNumber of nights: ", 3, INPUT_INT_POSITIVE, true);
         if (choice == IO_STATUS_EXIT)

@@ -21,7 +21,7 @@ int reservation_report(HotelSession *session)
         display_menu(MENU_STATIC);
         while (stage == 1){
             printf("Choose reservation date: \n");
-            choice = input_date(&current_date, &search_date);
+            choice = input_date(&search_date, NULL, &current_date);
 
             if (choice == IO_STATUS_UNDO)
             {
