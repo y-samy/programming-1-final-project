@@ -9,6 +9,15 @@
 #define MENU_STATIC \
 "Welcome to the hotel's reservation system.\n"\
 "------------------------------------------\n\n"\
+"User Manual\n"\
+"-----------\n"\
+"Keyboard Shortcuts:\n"\
+PROMPT_UNDO_KEY_S " to undo last action\n"\
+PROMPT_CANCEL_KEY_S " to return to previous menu\n"\
+"[Ctrl-C] to exit the program\n"\
+"[Enter] to submit\n"\
+"Use arrow keys to navigate multiple-choice menus\n"\
+"-----------\n\n"\
 
 #define MENU_CHOICES \
 "Login\n"\
