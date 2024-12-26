@@ -1,8 +1,8 @@
-#include "io.h"
-#include "platform.h"
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <libui/io.h>
+#include <libui/platform.h>
 
 
 typedef enum { ECHO_OFF, ECHO_THRU, ECHO_MASK, ECHO_ON } echo_t;
@@ -17,11 +17,6 @@ static void set_echo(echo_t mode)
 #endif
             break;
         case ECHO_MASK:
-            printf(CARET_RESET);
-#ifdef __unix__
-            termios_echo(false);
-#endif
-            break;
         case ECHO_THRU:
             printf(CARET_RESET);
 #ifdef __unix__
@@ -90,7 +85,7 @@ int input_date(struct tm *date_buffer, struct tm *lower_bound, struct tm *upper_
                 set_echo(ECHO_ON);
                 return 0;
             case CTRL_Z_KEY:
-                if ((int) difftime(mktime(&temp_date),mktime(&starting_date)) != 0) {
+                if ((int) difftime(mktime(&temp_date), mktime(&starting_date)) != 0) {
                     temp_date = starting_date;
                     continue;
                 }
@@ -145,12 +140,10 @@ int input_date(struct tm *date_buffer, struct tm *lower_bound, struct tm *upper_
         if (lower_bound != NULL && difftime(mktime(&temp_date), mktime(lower_bound)) < 0) {
             temp_date = *lower_bound;
             date_highlight = highlight_types[0];
-        }
-        else if (upper_bound != NULL && difftime(mktime(&temp_date), mktime(upper_bound)) > 0) {
+        } else if (upper_bound != NULL && difftime(mktime(&temp_date), mktime(upper_bound)) > 0) {
             temp_date = *upper_bound;
             date_highlight = highlight_types[0];
-        }
-        else
+        } else
             date_highlight = highlight_types[1];
         sanitize_date(&temp_date);
     }
@@ -331,9 +324,8 @@ int choices(char *choices)
         printf(CLEAR_LN "%s\n", choice_i[i]);
     }
     printf("\033[%dA", choice_count);
-    char c;
+    int c;
     while (1) {
-        int i;
         c = get_key();
         if (c == ESC_KEY) {
             for (; current_choice < choice_count; ++current_choice) {

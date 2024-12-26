@@ -2,6 +2,7 @@
 
 /* Control sequence introducer */
 #define CSI             "\033["
+#define OSC             "\033]"
 
 #define CLEAR_LN        CSI "2K\r"
 #define CUR_UP          CSI "A"
@@ -9,7 +10,7 @@
 #define CUR_ORIGIN      CSI "1;1H"
 
 #define CARET_HIDE      CSI "?25l"
-#define CARET_RESET     CSI "?25h" CSI "0 q" CSI "12;white\a"
+#define CARET_RESET     CSI "?25h" CSI "0 q" OSC "12;white\a"
 #define CARET_ERROR     CSI "2 q" CSI "12;red\a\a"
 
 #define CLR_TEXT_RED    CSI "31m"
