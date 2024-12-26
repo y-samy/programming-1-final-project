@@ -11,7 +11,7 @@
 
 #define CARET_HIDE      CSI "?25l"
 #define CARET_RESET     CSI "?25h" CSI "0 q" OSC "12;white\a"
-#define CARET_ERROR     CSI "2 q" CSI "12;red\a\a"
+#define CARET_ERROR     CSI "2 q" OSC "12;red\a\a"
 
 #define CLR_TEXT_RED    CSI "31m"
 #define CLR_TEXT_GREEN  CSI "32m"
