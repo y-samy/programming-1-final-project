@@ -37,13 +37,9 @@ int view_customer_details(HotelSession *session)
         while (stage == 2) {
             if (id_type == 1) {
                 choice = input(buffer, "Room Number: ", 10, INPUT_INT_POSITIVE, true);
-                if (choice == IO_STATUS_UNDO && buffer[0] == '\0') {
+                if (choice == IO_STATUS_UNDO) {
                     stage--;
                     break;
-                }
-                if (choice == IO_STATUS_UNDO) {
-                    buffer[0] = '\0';
-                    continue;
                 }
                 if (choice == IO_STATUS_ESC)
                     return MENU_SIGNAL_CANCEL;
@@ -73,13 +69,9 @@ int view_customer_details(HotelSession *session)
             }
             if (id_type == 2) {
                 choice = input(buffer, "Reservation ID: ", 10, INPUT_INT_POSITIVE, true);
-                if (choice == IO_STATUS_UNDO && buffer[0] == '\0') {
+                if (choice == IO_STATUS_UNDO) {
                     stage--;
                     break;
-                }
-                if (choice == IO_STATUS_UNDO) {
-                    buffer[0] = '\0';
-                    continue;
                 }
                 if (choice == IO_STATUS_ESC)
                     return MENU_SIGNAL_CANCEL;

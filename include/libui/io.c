@@ -51,57 +51,60 @@ static char *highlight_types[] = {ERROR_HIGHLIGHT, SELECTION_HIGHLIGHT};
 
 int input_date(struct tm *date_buffer, struct tm *lower_bound, struct tm *upper_bound)
 {
+    struct tm temp_date = {0}, starting_date = {0};
     set_echo(ECHO_OFF);
     if (lower_bound != NULL && upper_bound != NULL && difftime(mktime(upper_bound), mktime(lower_bound)) < 0)
         return IO_STATUS_ESC;
     if (lower_bound != NULL && difftime(mktime(date_buffer), mktime(lower_bound)) < 0)
-        *date_buffer = *lower_bound;
-    if (upper_bound != NULL && difftime(mktime(date_buffer), mktime(upper_bound)) > 0)
-        *date_buffer = *upper_bound;
-    struct tm temp_date = *date_buffer;
+        starting_date = *lower_bound;
+    else if (upper_bound != NULL && difftime(mktime(date_buffer), mktime(upper_bound)) > 0)
+        starting_date = *upper_bound;
+    else
+        starting_date = *date_buffer;
+    sanitize_date(&starting_date);
+    temp_date = starting_date;
     int c;
     int current_choice = 0;
     char *date_highlight = highlight_types[1];
     while (1) {
-        temp_date = *date_buffer;
         switch (current_choice) {
             case 0:
-                printf(CLEAR_LN "%s%02d" CLR_RESET " / %s / %d", date_highlight, date_buffer->tm_mday,
-                       month_names[date_buffer->tm_mon], date_buffer->tm_year + 1900);
+                printf(CLEAR_LN "%s%02d" CLR_RESET " / %s / %d", date_highlight, temp_date.tm_mday,
+                       month_names[temp_date.tm_mon], temp_date.tm_year + 1900);
                 break;
             case 1:
-                printf(CLEAR_LN "%02d / " "%s%s" CLR_RESET " / %d", date_buffer->tm_mday,
-                       date_highlight, month_names[date_buffer->tm_mon], date_buffer->tm_year + 1900);
+                printf(CLEAR_LN "%02d / " "%s%s" CLR_RESET " / %d", temp_date.tm_mday,
+                       date_highlight, month_names[temp_date.tm_mon], temp_date.tm_year + 1900);
                 break;
             case 2:
-                printf(CLEAR_LN "%02d / %s / " "%s%d" CLR_RESET, date_buffer->tm_mday,
-                       month_names[date_buffer->tm_mon], date_highlight, date_buffer->tm_year + 1900);
+                printf(CLEAR_LN "%02d / %s / " "%s%d" CLR_RESET, temp_date.tm_mday,
+                       month_names[temp_date.tm_mon], date_highlight, temp_date.tm_year + 1900);
                 break;
         }
         c = get_key();
         switch (c) {
             case '\n':
-            case '\r':
-                sanitize_date(date_buffer);
+                *date_buffer = temp_date;
                 printf(CLEAR_LN CLR_RESET "%02d / %s / %d\n", date_buffer->tm_mday,
                        month_names[date_buffer->tm_mon], date_buffer->tm_year + 1900);
                 set_echo(ECHO_ON);
                 return 0;
             case CTRL_Z_KEY:
+                if ((int) difftime(mktime(&temp_date),mktime(&starting_date)) != 0) {
+                    temp_date = starting_date;
+                    continue;
+                }
                 printf(CLEAR_LN);
-                sanitize_date(date_buffer);
                 set_echo(ECHO_ON);
                 return IO_STATUS_UNDO;
             case ESC_KEY:
                 printf(CLEAR_LN);
-                sanitize_date(date_buffer);
                 set_echo(ECHO_ON);
                 return IO_STATUS_ESC;
             case CTRL_C_KEY:
             case CTRL_D_KEY:
             case EOF:
                 printf(CLEAR_LN);
-                sanitize_date(date_buffer);
                 set_echo(ECHO_ON);
                 return IO_STATUS_EXIT;
             case ARR_RIGHT_KEY:
@@ -149,7 +152,7 @@ int input_date(struct tm *date_buffer, struct tm *lower_bound, struct tm *upper_
         }
         else
             date_highlight = highlight_types[1];
-        *date_buffer = temp_date;
+        sanitize_date(&temp_date);
     }
 }
 
@@ -182,7 +185,8 @@ int input(char *buffer, char *prompt_s, int max_size, int input_type, bool edit)
                     email_dot_i = j;
             }
         }
-    }
+    } else
+        buffer[0] = '\0';
     while (true) {
         c = get_key(); /* does not print what you type */
         if (c == ESC_KEY) {
@@ -192,6 +196,16 @@ int input(char *buffer, char *prompt_s, int max_size, int input_type, bool edit)
         }
         if (c == CTRL_Z_KEY) {
             printf(CLEAR_LN);
+            if (buffer[0] != '\0') {
+                floating_point_i = -1;
+                email_at_i = -1;
+                email_dot_i = -1;
+                buffer[0] = '\0';
+                printf("%s", prompt_s);
+                fflush(stdout);
+                i = 0;
+                continue;
+            }
             set_echo(ECHO_ON);
             return IO_STATUS_UNDO;
         }
@@ -209,7 +223,7 @@ int input(char *buffer, char *prompt_s, int max_size, int input_type, bool edit)
             putchar('\n');
             break;
         }
-        if ((c == BACKSPACE_KEY || c == DEL_KEY) && i > 0) {
+        if ((c == BACKSPACE_KEY || c == BACKSPACE_EC) && i > 0) {
             /* Backspace simulation */
             printf(CARET_RESET);
             printf("\b \b");

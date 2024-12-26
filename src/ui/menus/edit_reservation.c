@@ -43,13 +43,9 @@ int edit_reservation_menu(HotelSession *session)
         while (stage == 2) {
             if (id_type == 1) {
                 choice = input(id_buffer, "\nRoom Number: ", 10, INPUT_INT_POSITIVE, true);
-                if (choice == IO_STATUS_UNDO && id_buffer[0] == '\0') {
+                if (choice == IO_STATUS_UNDO) {
                     stage--;
                     break;
-                }
-                if (choice == IO_STATUS_UNDO) {
-                    id_buffer[0] = '\0';
-                    continue;
                 }
                 if (choice == IO_STATUS_ESC)
                     return MENU_SIGNAL_CANCEL;
@@ -64,13 +60,9 @@ int edit_reservation_menu(HotelSession *session)
             }
             if (id_type == 2) {
                 choice = input(id_buffer, "\nReservation ID: ", 10, INPUT_INT_POSITIVE, true);
-                if (choice == IO_STATUS_UNDO && id_buffer[0] == '\0') {
+                if (choice == IO_STATUS_UNDO) {
                     stage--;
                     break;
-                }
-                if (choice == IO_STATUS_UNDO) {
-                    id_buffer[0] = '\0';
-                    continue;
                 }
                 if (choice == IO_STATUS_ESC)
                     return MENU_SIGNAL_CANCEL;

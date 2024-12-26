@@ -25,7 +25,7 @@ int reservation_report(HotelSession *session)
 
             if (choice == IO_STATUS_UNDO)
             {
-                current_date = search_date;
+                printf(CUR_UP CLEAR_LN);
                 continue;
             }
 

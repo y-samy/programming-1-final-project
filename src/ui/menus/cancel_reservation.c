@@ -38,13 +38,9 @@ int cancel_reservation_menu(HotelSession *session)
             if (id_type == reservation_id) {
                 reservation_t *reservation = NULL;
                 status = input(id_buff, "Reservation ID: ", 10, INPUT_INT_POSITIVE, true);
-                if (status == IO_STATUS_UNDO && id_buff[0] == '\0') {
+                if (status == IO_STATUS_UNDO) {
                     stage--;
                     break;
-                }
-                if (status == IO_STATUS_UNDO) {
-                    id_buff[0] = '\0';
-                    continue;
                 }
                 if (status == IO_STATUS_ESC)
                     return MENU_SIGNAL_CANCEL;
@@ -76,13 +72,9 @@ int cancel_reservation_menu(HotelSession *session)
             if (id_type == room_id) {
                 room_t *room = NULL;
                 status = input(id_buff, "Room ID: ", 10, INPUT_INT_POSITIVE, true);
-                if (status == IO_STATUS_UNDO && id_buff[0] == '\0') {
+                if (status == IO_STATUS_UNDO) {
                     stage--;
                     break;
-                }
-                if (status == IO_STATUS_UNDO) {
-                    id_buff[0] = '\0';
-                    continue;
                 }
                 if (status == IO_STATUS_ESC)
                     return MENU_SIGNAL_CANCEL;

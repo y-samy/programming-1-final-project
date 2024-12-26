@@ -40,10 +40,6 @@ int reserve_room(HotelSession *session)
         }
         while (stage == 2) {
             choice = input(reservation.customer.nationalId, "Customer national ID: ", 15, INPUT_INT_ANY, true);
-            if (choice == IO_STATUS_UNDO && reservation.customer.nationalId[0] != '\0') {
-                reservation.customer.nationalId[0] = '\0';
-                continue;
-            }
             if (choice == IO_STATUS_UNDO) {
                 printf(CUR_UP);
                 stage--;
@@ -57,10 +53,6 @@ int reserve_room(HotelSession *session)
         }
         while (stage == 3) {
             choice = input(reservation.customer.email, "Customer email: ", 100, INPUT_EMAIL, true);
-            if (choice == IO_STATUS_UNDO && reservation.customer.email[0] != '\0') {
-                reservation.customer.email[0] = '\0';
-                continue;
-            }
             if (choice == IO_STATUS_UNDO) {
                 printf(CUR_UP);
                 stage--;
@@ -74,10 +66,6 @@ int reserve_room(HotelSession *session)
         }
         while (stage == 4) {
             choice = input(reservation.customer.phoneNum, "Customer mobile number: ", 15, INPUT_INT_POSITIVE, true);
-            if (choice == IO_STATUS_UNDO && reservation.customer.phoneNum[0] != '\0') {
-                reservation.customer.phoneNum[0] = '\0';
-                continue;
-            }
             if (choice == IO_STATUS_UNDO) {
                 printf(CUR_UP);
                 stage--;
@@ -92,11 +80,6 @@ int reserve_room(HotelSession *session)
         while (stage == 5) {
             printf("Choose reservation date: \n");
             choice = input_date(&reservation.date, &current_date, NULL);
-            if (choice == IO_STATUS_UNDO && difftime(mktime(&reservation.date), mktime(&current_date)) > 0) {
-                reservation.date = current_date;
-                printf(CUR_UP);
-                continue;
-            }
             if (choice == IO_STATUS_UNDO) {
                 printf(CUR_UP CLEAR_LN CUR_UP);
                 stage--;
@@ -110,10 +93,6 @@ int reserve_room(HotelSession *session)
         }
         while (stage == 6) {
             choice = input(nights_count_buffer, "Number of nights: ", 3, INPUT_INT_POSITIVE, true);
-            if (choice == IO_STATUS_UNDO && nights_count_buffer[0] != '\0') {
-                nights_count_buffer[0] = '\0';
-                continue;
-            }
             if (choice == IO_STATUS_UNDO) {
                 printf(CUR_UP CUR_UP);
                 stage--;
