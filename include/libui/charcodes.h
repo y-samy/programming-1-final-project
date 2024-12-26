@@ -1,8 +1,8 @@
 #pragma once
 
-/* Control sequence introducer */
-#define CSI             "\033["
-#define OSC             "\033]"
+
+#define CSI             "\033[" /* Control sequence introducer */
+#define OSC             "\033]" /* Operating system command */
 
 #define CLEAR_LN        CSI "2K\r"
 #define CUR_UP          CSI "A"
