@@ -48,10 +48,11 @@ int reservation_report(HotelSession *session)
 
         while (stage == 2){
             while (room != NULL) {
-                printf("\n" CLEAR_LN "Customer name: %s", room->reservation.customer.name);
-                printf("\nCustomer email: %s", room->reservation.customer.email);
-                printf("\nCustomer nationalID: %s", room->reservation.customer.nationalId);
-                printf("\nCustomer phone number: %s\n\n", room->reservation.customer.phoneNum);
+                printf(CUR_DOWN CLEAR_LN "Customer name: %s\n", room->reservation.customer.name);
+                printf("Customer email: %s\n", room->reservation.customer.email);
+                printf("Customer phone number: %s\n", room->reservation.customer.phoneNum);
+                printf("Number of nights: %d\n", room->reservation.nights_count);
+                printf("Room view: %s\n\n", stringify_view(room));
 
                 fflush(stdout);
                 room = get_room_by_checkin_date(NULL, search_date);
