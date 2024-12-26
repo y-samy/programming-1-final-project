@@ -42,6 +42,7 @@ int main()
             continue;
         }
 
+        cull_expired_reservations(hotel_session);
         switch (response) {
             case 1:
                 response = reserve_room(hotel_session);
