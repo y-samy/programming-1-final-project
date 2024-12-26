@@ -5,7 +5,7 @@
 #include <string.h>
 
 
-typedef enum {ECHO_OFF, ECHO_THRU, ECHO_MASK, ECHO_ON} echo_t;
+typedef enum { ECHO_OFF, ECHO_THRU, ECHO_MASK, ECHO_ON } echo_t;
 
 static void set_echo(echo_t mode)
 {
@@ -46,7 +46,8 @@ void display_menu(char *menu)
 }
 
 
-static const char *month_names[] = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "SEP", "AUG", "OCT", "NOV", "DEC"};
+static char *month_names[] = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "SEP", "AUG", "OCT", "NOV", "DEC"};
+static char *highlight_types[] = {ERROR_HIGHLIGHT, SELECTION_HIGHLIGHT};
 
 int input_date(struct tm *date_buffer, struct tm *lower_bound, struct tm *upper_bound)
 {
@@ -60,83 +61,94 @@ int input_date(struct tm *date_buffer, struct tm *lower_bound, struct tm *upper_
     struct tm temp_date = *date_buffer;
     int c;
     int current_choice = 0;
+    char *date_highlight = highlight_types[1];
     while (1) {
         temp_date = *date_buffer;
         switch (current_choice) {
             case 0:
-                printf(CLEAR_LN SELECTION_HIGHLIGHT "%02d" CLR_RESET " / %s / %d", date_buffer->tm_mday,
+                printf(CLEAR_LN "%s%02d" CLR_RESET " / %s / %d", date_highlight, date_buffer->tm_mday,
                        month_names[date_buffer->tm_mon], date_buffer->tm_year + 1900);
-            break;
+                break;
             case 1:
-                printf(CLEAR_LN "%02d / " SELECTION_HIGHLIGHT "%s" CLR_RESET " / %d", date_buffer->tm_mday,
-                       month_names[date_buffer->tm_mon], date_buffer->tm_year + 1900);
-            break;
+                printf(CLEAR_LN "%02d / " "%s%s" CLR_RESET " / %d", date_buffer->tm_mday,
+                       date_highlight, month_names[date_buffer->tm_mon], date_buffer->tm_year + 1900);
+                break;
             case 2:
-                printf(CLEAR_LN "%02d / %s / " SELECTION_HIGHLIGHT "%d" CLR_RESET, date_buffer->tm_mday,
-                       month_names[date_buffer->tm_mon], date_buffer->tm_year + 1900);
-            break;
+                printf(CLEAR_LN "%02d / %s / " "%s%d" CLR_RESET, date_buffer->tm_mday,
+                       month_names[date_buffer->tm_mon], date_highlight, date_buffer->tm_year + 1900);
+                break;
         }
         c = get_key();
         switch (c) {
             case '\n':
             case '\r':
+                sanitize_date(date_buffer);
                 printf(CLEAR_LN CLR_RESET "%02d / %s / %d\n", date_buffer->tm_mday,
                        month_names[date_buffer->tm_mon], date_buffer->tm_year + 1900);
-            set_echo(ECHO_ON);
-            return 0;
+                set_echo(ECHO_ON);
+                return 0;
             case CTRL_Z_KEY:
                 printf(CLEAR_LN);
-            set_echo(ECHO_ON);
-            return IO_STATUS_UNDO;
+                sanitize_date(date_buffer);
+                set_echo(ECHO_ON);
+                return IO_STATUS_UNDO;
             case ESC_KEY:
                 printf(CLEAR_LN);
-            set_echo(ECHO_ON);
-            return IO_STATUS_ESC;
+                sanitize_date(date_buffer);
+                set_echo(ECHO_ON);
+                return IO_STATUS_ESC;
             case CTRL_C_KEY:
             case CTRL_D_KEY:
             case EOF:
                 printf(CLEAR_LN);
-            set_echo(ECHO_ON);
-            return IO_STATUS_EXIT;
+                sanitize_date(date_buffer);
+                set_echo(ECHO_ON);
+                return IO_STATUS_EXIT;
             case ARR_RIGHT_KEY:
                 if (current_choice < 2)
                     current_choice++;
-            break;
+                break;
             case ARR_LEFT_KEY:
                 if (current_choice > 0)
                     current_choice--;
-            break;
+                break;
             case ARR_DOWN_KEY:
                 switch (current_choice) {
                     case 0:
                         temp_date.tm_mday--;
-                    break;
+                        break;
                     case 1:
                         temp_date.tm_mon--;
-                    break;
+                        break;
                     case 2:
                         temp_date.tm_year--;
-                    break;
+                        break;
                 }
-            break;
+                break;
             case ARR_UP_KEY:
                 switch (current_choice) {
                     case 0:
                         temp_date.tm_mday++;
-                    break;
+                        break;
                     case 1:
                         temp_date.tm_mon++;
-                    break;
+                        break;
                     case 2:
                         temp_date.tm_year++;
-                    break;
+                        break;
                 }
-            break;
+                break;
         }
-        if (lower_bound != NULL && difftime(mktime(&temp_date), mktime(lower_bound)) < 0)
+        if (lower_bound != NULL && difftime(mktime(&temp_date), mktime(lower_bound)) < 0) {
             temp_date = *lower_bound;
-        if (upper_bound != NULL && difftime(mktime(&temp_date), mktime(upper_bound)) > 0)
+            date_highlight = highlight_types[0];
+        }
+        else if (upper_bound != NULL && difftime(mktime(&temp_date), mktime(upper_bound)) > 0) {
             temp_date = *upper_bound;
+            date_highlight = highlight_types[0];
+        }
+        else
+            date_highlight = highlight_types[1];
         *date_buffer = temp_date;
     }
 }
@@ -148,7 +160,7 @@ int input(char *buffer, char *prompt_s, int max_size, int input_type, bool edit)
     echo_t echo_mode = ECHO_THRU;
     if (input_type == INPUT_PASSWORD)
         echo_mode = ECHO_MASK;
-    
+
     set_echo(echo_mode);
 
     int i = 0;
@@ -190,13 +202,16 @@ int input(char *buffer, char *prompt_s, int max_size, int input_type, bool edit)
         }
         if (c == '\n' && i > 0) {
             if (input_type == INPUT_EMAIL && (email_at_i == -1 || email_dot_i == -1 || buffer[i - 1] == '@' || buffer[
-                                                  i - 1] == '.' || buffer[i - 2] == '.'))
+                                                  i - 1] == '.' || buffer[i - 2] == '.')) {
+                printf(CARET_ERROR);
                 continue;
+            }
             putchar('\n');
             break;
         }
         if ((c == BACKSPACE_KEY || c == DEL_KEY) && i > 0) {
             /* Backspace simulation */
+            printf(CARET_RESET);
             printf("\b \b");
             i--;
             if (i == floating_point_i)
@@ -259,6 +274,7 @@ int input(char *buffer, char *prompt_s, int max_size, int input_type, bool edit)
         }
         if (input_valid) {
             /* Echo handling */
+            printf(CARET_RESET);
             if (echo_mode == ECHO_THRU)
                 putchar(c);
             else /* Password hiding */
@@ -266,6 +282,8 @@ int input(char *buffer, char *prompt_s, int max_size, int input_type, bool edit)
 
             buffer[i] = c;
             i++;
+        } else {
+            printf(CARET_ERROR);
         }
     }
     buffer[i] = '\0';
@@ -346,7 +364,7 @@ int choices(char *choices)
             for (i = 1; i < choice_count; ++i) {
                 printf(CLEAR_LN CUR_UP CLEAR_LN);
             }
-            printf("%s", choice_i[current_choice-1]);
+            printf("%s", choice_i[current_choice - 1]);
             set_echo(ECHO_ON);
             free(choices_s);
             free(choice_i);
@@ -357,22 +375,21 @@ int choices(char *choices)
                    choice_i[current_choice - 1],
                    choice_i[current_choice - 2]);
             current_choice--;
-        }
-        else if (c == ARR_DOWN_KEY && current_choice < choice_count) {
+        } else if (c == ARR_DOWN_KEY && current_choice < choice_count) {
             printf(CLEAR_LN CLR_RESET "%s" CUR_DOWN CLEAR_LN SELECTION_HIGHLIGHT ">%s" CLR_RESET,
                    choice_i[current_choice - 1],
                    choice_i[current_choice]);
             current_choice++;
-        }
-        else if (c == ARR_UP_KEY && current_choice == 1) {
-            printf(CLEAR_LN CLR_RESET "%s\033[%dB" CLEAR_LN SELECTION_HIGHLIGHT ">%s" CLR_RESET, choice_i[current_choice - 1]
-                , choice_count-1, choice_i[choice_count-1]);
+        } else if (c == ARR_UP_KEY && current_choice == 1) {
+            printf(CLEAR_LN CLR_RESET "%s\033[%dB" CLEAR_LN SELECTION_HIGHLIGHT ">%s" CLR_RESET,
+                   choice_i[current_choice - 1]
+                   , choice_count - 1, choice_i[choice_count - 1]);
             current_choice = choice_count;
-        }
-        else if (c == ARR_DOWN_KEY && current_choice == choice_count) {
+        } else if (c == ARR_DOWN_KEY && current_choice == choice_count) {
             current_choice = 1;
-            printf(CLEAR_LN CLR_RESET "%s\033[%dA" CLEAR_LN SELECTION_HIGHLIGHT ">%s" CLR_RESET, choice_i[choice_count-1]
-                , choice_count-1, choice_i[current_choice - 1]);
+            printf(CLEAR_LN CLR_RESET "%s\033[%dA" CLEAR_LN SELECTION_HIGHLIGHT ">%s" CLR_RESET,
+                   choice_i[choice_count - 1]
+                   , choice_count - 1, choice_i[current_choice - 1]);
         }
     }
 }

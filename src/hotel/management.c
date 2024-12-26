@@ -80,10 +80,12 @@ void terminate_management_session(HotelSession *hotel_session)
                 stringify_view(room), room->price);
         if (room->reserved)
             fprintf(reservations_file, "%d,%d,%s,%s,%s,%d,%d-%d-%d,%s,%s\n", room->reservation.reservation_id,
-                room->id, (room->reservation.checked_in ? "confirmed" : "unconfirmed"),
-                room->reservation.customer.name, room->reservation.customer.nationalId, room->reservation.nights_count,
-                room->reservation.date.tm_mday, room->reservation.date.tm_mon + 1, room->reservation.date.tm_year + 1900,
-                room->reservation.customer.email, room->reservation.customer.phoneNum);
+                    room->id, (room->reservation.checked_in ? "confirmed" : "unconfirmed"),
+                    room->reservation.customer.name, room->reservation.customer.nationalId,
+                    room->reservation.nights_count,
+                    room->reservation.date.tm_mday, room->reservation.date.tm_mon + 1,
+                    room->reservation.date.tm_year + 1900,
+                    room->reservation.customer.email, room->reservation.customer.phoneNum);
     }
     free(hotel_session->rooms_p);
     free(hotel_session);
@@ -182,7 +184,7 @@ int get_room_id(room_t *room)
 
 char *stringify_availability(room_t *room)
 {
-    return (room->reserved) ? "Unavailable":"Available";
+    return (room->reserved) ? "Unavailable" : "Available";
 }
 
 
@@ -267,7 +269,8 @@ room_t *get_room_by_customer_name(HotelSession *session, char *name)
         i = 0;
     }
     while (i < internal_session->rooms_count) {
-        if (internal_session->rooms_p[i].reserved && strstr(internal_session->rooms_p[i].reservation.customer.name,name) != NULL) {
+        if (internal_session->rooms_p[i].reserved && strstr(internal_session->rooms_p[i].reservation.customer.name,
+                                                            name) != NULL) {
             return &internal_session->rooms_p[i++];
         }
         i++;
@@ -285,7 +288,8 @@ room_t *get_room_by_checkin_date(HotelSession *session, struct tm date)
         i = 0;
     }
     while (i < internal_session->rooms_count) {
-        if (internal_session->rooms_p[i].reserved && abs(difftime(mktime(&date),mktime(&internal_session->rooms_p[i].reservation.date))) < 86400) {
+        if (internal_session->rooms_p[i].reserved && internal_session->rooms_p[i].reservation.checked_in && abs(
+                difftime(mktime(&date), mktime(&internal_session->rooms_p[i].reservation.date))) < 86400) {
             return &internal_session->rooms_p[i++];
         }
         i++;

@@ -39,7 +39,7 @@ int reservation_report(HotelSession *session)
 
             if (!room)
             {
-                printf(CUR_DOWN CLEAR_LN ERROR_HIGHLIGHT CLR_TEXT_BLACK "Nothing to show here" CLR_RESET CUR_UP CLEAR_LN CUR_UP
+                printf(CUR_DOWN CLEAR_LN ERROR_HIGHLIGHT "Nothing to show here" CLR_RESET CUR_UP CLEAR_LN CUR_UP
                     CLEAR_LN CLEAR_LN CUR_UP);
                 continue;
             }

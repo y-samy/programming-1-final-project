@@ -6,7 +6,8 @@
 #define CUR_ORIGIN "\033[1;1H"
 
 #define CARET_HIDE "\033[?25l"
-#define CARET_RESET "\033[?25h"
+#define CARET_RESET "\033[?25h\033[0 q\033]12;white\a"
+#define CARET_ERROR "\033[2 q\033]12;red\a\a"
 
 #define CLR_TEXT_RED "\033[31m"
 #define CLR_TEXT_GREEN "\033[32m"

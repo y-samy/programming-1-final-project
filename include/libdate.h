@@ -4,3 +4,4 @@
 
 
 struct tm get_current_date(void);
+void sanitize_date(struct tm *date);
