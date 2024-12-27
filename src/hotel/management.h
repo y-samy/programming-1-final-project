@@ -31,6 +31,7 @@ typedef struct {
 typedef struct {
     room_t *rooms_p;
     size_t rooms_count;
+    int customers_overstaying;
 } HotelSession;
 
 

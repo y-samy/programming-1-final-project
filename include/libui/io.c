@@ -319,7 +319,7 @@ int choices(char *choices)
         choice_i[i++] = _token;
         _token = strtok(NULL, "\n");
     }
-    printf(SELECTION_HIGHLIGHT ">%s\n" CLR_RESET, choice_i[0]);
+    printf(CLEAR_LN SELECTION_HIGHLIGHT ">%s\n" CLR_RESET, choice_i[0]);
     for (i = 1; i < choice_count; ++i) {
         printf(CLEAR_LN "%s\n", choice_i[i]);
     }

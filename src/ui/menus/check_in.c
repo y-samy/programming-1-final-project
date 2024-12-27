@@ -60,7 +60,6 @@ int check_in(HotelSession *session)
             reservation->nights_count = old_nights_count;
             reservation = NULL;
             display_menu(MENU_STATIC);
-            continue;
         }
         if (status == IO_STATUS_ESC || status == 2)
             return MENU_SIGNAL_PROCEED;

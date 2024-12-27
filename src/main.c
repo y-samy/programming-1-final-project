@@ -36,7 +36,7 @@ int main()
                 continue;
         }
 
-        response = main_menu();
+        response = main_menu(hotel_session);
         if (response == MENU_SIGNAL_EXIT)
             exit_routine(login_session, hotel_session);
         if (response == MENU_SIGNAL_CANCEL) {

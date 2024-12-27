@@ -16,7 +16,7 @@ void init_management_session(HotelSession **session_p)
     *session_p = malloc(sizeof(HotelSession));
     HotelSession *hotel_session = *session_p;
     size_t i, j;
-
+    hotel_session->customers_overstaying = 0;
     FILE *rooms_file = fopen(ROOMS_FILE, "r");
     hotel_session->rooms_count = file_entry_count(rooms_file);
     fclose(rooms_file);
@@ -302,15 +302,21 @@ room_t *get_room_by_checkin_date(HotelSession *session, struct tm date)
 void cull_expired_reservations(HotelSession *hotel_session)
 {
     size_t i;
+    int customers_overstaying = 0;
     struct tm current_date = get_current_date(), res_date = {0};
     for (i = 0; i < hotel_session->rooms_count; i++) {
         if (hotel_session->rooms_p[i].reserved) {
             res_date = hotel_session->rooms_p[i].reservation.date;
             res_date.tm_mday += hotel_session->rooms_p[i].reservation.nights_count;
             if ((int) ceil(difftime(mktime(&current_date), mktime(&res_date))) > 0) {
+                if (hotel_session->rooms_p[i].reservation.checked_in) {
+                    customers_overstaying++;
+                    continue;
+                }
                 hotel_session->rooms_p[i].reserved = false;
                 hotel_session->rooms_p[i].reservation = empty_reservation;
             }
         }
     }
+    hotel_session->customers_overstaying = customers_overstaying;
 }
