@@ -10,9 +10,7 @@
 #define CUR_ORIGIN      CSI "1;1H"
 
 #define CARET_HIDE      CSI "?25l"
-#define CARET_RESET     CSI "?25h" CSI "0 q" OSC "12;white\a"
-#define CARET_ERROR     CSI "2 q" OSC "12;red\a\a"
-
+#define CARET_RESET     CSI "?25h" CSI "0 q"
 #define CLR_TEXT_RED    CSI "31m"
 #define CLR_TEXT_GREEN  CSI "32m"
 #define CLR_TEXT_BLACK  CSI "30m"

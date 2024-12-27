@@ -210,15 +210,17 @@ int input(char *buffer, char *prompt_s, int max_size, int input_type, bool edit)
         if (c == '\n' && i > 0) {
             if (input_type == INPUT_EMAIL && (email_at_i == -1 || email_dot_i == -1 || buffer[i - 1] == '@' || buffer[
                                                   i - 1] == '.' || buffer[i - 2] == '.')) {
-                printf(CARET_ERROR);
+                printf(ERROR_HIGHLIGHT " " CLR_RESET "\b");
+                input_valid = false;
                 continue;
             }
-            putchar('\n');
+            printf(" \n");
             break;
         }
         if ((c == BACKSPACE_KEY || c == BACKSPACE_EC) && i > 0) {
             /* Backspace simulation */
-            printf(CARET_RESET);
+            if (!input_valid)
+                printf(" \b");
             printf("\b \b");
             i--;
             if (i == floating_point_i)
@@ -290,7 +292,7 @@ int input(char *buffer, char *prompt_s, int max_size, int input_type, bool edit)
             buffer[i] = c;
             i++;
         } else {
-            printf(CARET_ERROR);
+            printf(ERROR_HIGHLIGHT " " CLR_RESET "\b");
         }
     }
     buffer[i] = '\0';
