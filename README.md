@@ -166,4 +166,4 @@ do {
 Use forward slashes `/` unless compatibility with a supported Windows version requires use of a backward slash `\`.
 
 ### Newline Indicator (in source code, not strings)
-Optionally prefer `CRLF` (or `\r\n`) for by default, and `LF` (or `\n`) only for strict Unix compatibility situations. Manage newline indicators using `.gitattributes` instead of using your IDE.
+Optionally prefer `CRLF` (or `\r\n`) by default, and `LF` (or `\n`) only for strict Unix compatibility situations. Manage newline indicators using `.gitattributes` instead of using your IDE.
