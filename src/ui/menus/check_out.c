@@ -18,6 +18,8 @@ int check_out_menu(HotelSession *session)
     reservation_t *reservation = NULL, old_reservation = create_reservation();
     struct tm today = get_current_date();
     int status;
+    room_t *room = NULL;
+    int nights_count = 0;
     while (1) {
         while (reservation == NULL) {
             status = input(input_buffer, "Reservation ID: ", 9, INPUT_INT_POSITIVE, false);
@@ -40,16 +42,19 @@ int check_out_menu(HotelSession *session)
                 reservation = NULL;
                 continue;
             }
-            room_t *room = get_room_by_reservation(session, reservation);
-            reservation->nights_count = (int) ceil(difftime(mktime(&today), mktime(&reservation->date))) / 86400;
-            price = reservation->nights_count ? room->price * reservation->nights_count : room->price;
+            old_reservation = *reservation;
+            room = get_room_by_reservation(session, reservation);
+            nights_count = (int) ceil(difftime(mktime(&today), mktime(&reservation->date))) / 86400;
+            price = nights_count ? room->price * nights_count : room->price;
             printf("Price: %d\n", price);
             cancel_reservation(session, reservation->reservation_id);
         }
         status = choices("Undo Check-out\nCheck-out Another Customer\nMain Menu\nExit\n");
         if (status == IO_STATUS_UNDO || status == 1) {
-            *reservation = old_reservation;
+            room->reserved = true;
+            room->reservation = old_reservation;
             reservation = NULL;
+            room = NULL;
             display_menu(MENU_STATIC);
         }
         if (status == 2)
