@@ -15,8 +15,10 @@ int main()
     HotelSession *hotel_session = NULL;
     init_login_session(&login_session);
     init_management_session(&hotel_session);
+
     int response;
     while (1) {
+        cull_expired_reservations(hotel_session);
         /*
          * If not logged in:
          * Choose: Login/ Exit
@@ -41,8 +43,6 @@ int main()
             logout(login_session);
             continue;
         }
-
-        cull_expired_reservations(hotel_session);
         switch (response) {
             case 1:
                 response = reserve_room(hotel_session);
