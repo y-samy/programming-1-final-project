@@ -14,6 +14,7 @@ typedef struct {
 } credentials_t;
 
 typedef struct {
+    size_t password_attempts;
     credentials_t *users_list;
     size_t users_count;
     bool logged_in;
@@ -26,3 +27,5 @@ bool is_logged_in(LoginSession *login_session);
 bool verify_username(LoginSession *login_session, const char *username);
 bool verify_password(LoginSession *login_session, const char *password);
 void logout(LoginSession *login_session);
+bool can_attempt(LoginSession *login_session);
+int get_remaining_attempts(LoginSession *login_session);

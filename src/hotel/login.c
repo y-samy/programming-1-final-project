@@ -4,7 +4,10 @@
 #include <string.h>
 #include <libparse.h>
 
+#include "management.h"
+
 #define USERS_FILE "users.txt"
+#define PASSWORD_ATTEMPTS 3
 
 
 void init_login_session(LoginSession **session)
@@ -19,6 +22,7 @@ void init_login_session(LoginSession **session)
     login_session->users_list = malloc(sizeof(credentials_t) * login_session->users_count);
     login_session->user_id = 0;
     login_session->logged_in = false;
+    login_session->password_attempts = 0;
     size_t i;
     for (i = 0; i < login_session->users_count; i++)
         fscanf(users_file,"%99s %99s",login_session->users_list[i].username, login_session->users_list[i].password);
@@ -56,8 +60,20 @@ bool verify_password(LoginSession *login_session, const char *password)
     valid = !(strcmp(password, login_session->users_list[login_session->user_id-1].password));
     if (valid) {
         login_session->logged_in = true;
-    }
+        login_session->password_attempts = 0;
+    } else
+        login_session->password_attempts++;
     return valid;
+}
+
+bool can_attempt(LoginSession *login_session)
+{
+    return login_session->password_attempts < PASSWORD_ATTEMPTS;
+}
+
+int get_remaining_attempts(LoginSession *login_session)
+{
+    return PASSWORD_ATTEMPTS - login_session->password_attempts;
 }
 
 void logout(LoginSession *login_session)

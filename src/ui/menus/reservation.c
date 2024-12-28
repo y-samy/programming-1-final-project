@@ -27,7 +27,7 @@ int reserve_room(HotelSession *session)
     while (1) {
         while (stage == 1) {
             display_menu(MENU_STATIC);
-            choice = input(reservation.customer.name, "Customer name: ", 100, INPUT_ALPHABETICAL, true);
+            choice = input(reservation.customer.name, "Customer name: ", 0, 100, INPUT_ALPHABETICAL, true);
             if (choice == IO_STATUS_UNDO) {
                 reservation.customer.name[0] = '\0';
                 continue;
@@ -39,7 +39,7 @@ int reserve_room(HotelSession *session)
             stage++;
         }
         while (stage == 2) {
-            choice = input(reservation.customer.nationalId, "Customer national ID: ", 15, INPUT_INT_POSITIVE, true);
+            choice = input(reservation.customer.nationalId, "Customer national ID: ", 0, 15, INPUT_INT_POSITIVE, true);
             if (choice == IO_STATUS_UNDO) {
                 printf(CUR_UP);
                 stage--;
@@ -52,7 +52,7 @@ int reserve_room(HotelSession *session)
             stage++;
         }
         while (stage == 3) {
-            choice = input(reservation.customer.email, "Customer email: ", 100, INPUT_EMAIL, true);
+            choice = input(reservation.customer.email, "Customer email: ", 0, 100, INPUT_EMAIL, true);
             if (choice == IO_STATUS_UNDO) {
                 printf(CUR_UP);
                 stage--;
@@ -65,7 +65,7 @@ int reserve_room(HotelSession *session)
             stage++;
         }
         while (stage == 4) {
-            choice = input(reservation.customer.phoneNum, "Customer mobile number: ", 15, INPUT_INT_POSITIVE, true);
+            choice = input(reservation.customer.phoneNum, "Customer mobile number: ", 11, 12, INPUT_INT_POSITIVE, true);
             if (choice == IO_STATUS_UNDO) {
                 printf(CUR_UP);
                 stage--;
@@ -92,7 +92,7 @@ int reserve_room(HotelSession *session)
             stage++;
         }
         while (stage == 6) {
-            choice = input(nights_count_buffer, "Number of nights: ", 3, INPUT_INT_POSITIVE, true);
+            choice = input(nights_count_buffer, "Number of nights: ", 1, 3, INPUT_INT_POSITIVE, true);
             if (choice == IO_STATUS_UNDO) {
                 printf(CUR_UP CUR_UP);
                 stage--;

@@ -26,7 +26,7 @@ typedef enum {INPUT_ANY, INPUT_USERNAME, INPUT_PASSWORD, INPUT_ALPHANUMERIC, INP
 #endif
 
 
-int input(char *buffer, char *prompt_s, int max_size, VALIDATION_TYPE input_type, bool edit);
+int input(char *buffer, char *prompt_s, int lower_size_bound , int upper_size_bound, VALIDATION_TYPE input_type, bool edit);
 int input_date(struct tm* date_buffer, struct tm* lower_bound, struct tm* upper_bound);
 int choices(char* choices);
 void display_menu(char* menu);

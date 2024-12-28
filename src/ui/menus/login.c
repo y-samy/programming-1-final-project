@@ -6,7 +6,6 @@
  "LOGIN\n"\
  "-----\n\n"
 
-#define PASSWORD_ATTEMPTS 3
 
 int login_menu(LoginSession *session)
 {
@@ -16,9 +15,8 @@ int login_menu(LoginSession *session)
     while (!is_logged_in(session)) {
         bool input_valid = false;
         int input_status;
-        int input_attempts = 0;
         do {
-            input_status = input(username, "Username: ", USERNAME_LEN, INPUT_USERNAME, true);
+            input_status = input(username, "Username: ", 0, USERNAME_LEN, INPUT_USERNAME, true);
             if (input_status == IO_STATUS_UNDO) {
                 username[0] = '\0';
                 continue;
@@ -33,10 +31,9 @@ int login_menu(LoginSession *session)
             }
         } while (!input_valid);
         input_valid = false;
-        input_attempts = 0;
         printf(CLEAR_LN);
         do {
-            input_status = input(password, "Password: ", PASSWORD_LEN, INPUT_PASSWORD, false);
+            input_status = input(password, "Password: ", 0,PASSWORD_LEN, INPUT_PASSWORD, false);
             if (input_status == IO_STATUS_UNDO) {
                 password[0] = '\0';
                 continue;
@@ -46,11 +43,10 @@ int login_menu(LoginSession *session)
             if (input_status == IO_STATUS_EXIT)
                 return MENU_SIGNAL_EXIT;
             if (!((input_valid = verify_password(session, password)))) {
-                printf(CLEAR_LN ERROR_HIGHLIGHT "Incorrect password! %d of %d attempts." CLR_RESET CUR_UP CLEAR_LN, input_attempts + 1, PASSWORD_ATTEMPTS);
+                printf(CLEAR_LN ERROR_HIGHLIGHT "Incorrect password! %d attempts remaining." CLR_RESET CUR_UP CLEAR_LN, get_remaining_attempts(session));
                 password[0] = '\0';
             }
-            input_attempts++;
-        } while (!input_valid && input_attempts < PASSWORD_ATTEMPTS);
+        } while (!input_valid && can_attempt(session));
         if (!input_valid)
             return MENU_SIGNAL_EXIT;
     }

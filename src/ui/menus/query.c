@@ -33,7 +33,7 @@ int query_menu(HotelSession *session)
         while (stage == 2) {
             if (choice == 1) {
                 char customer_name[100] = {0};
-                status = input(customer_name, "Customer name: ", 99,INPUT_ALPHABETICAL,true);
+                status = input(customer_name, "Customer name: ", 0, 99, INPUT_ALPHABETICAL,true);
                 if (status == IO_STATUS_UNDO) {
                     printf(CUR_UP);
                     stage--;
@@ -63,7 +63,7 @@ int query_menu(HotelSession *session)
             if (choice == 2) {
                 char room_number[11] = {0};
                 int room_id = 0;
-                status = input(room_number, "Room number: ", 99,INPUT_INT_POSITIVE,true);
+                status = input(room_number, "Room number: ", 0,99, INPUT_INT_POSITIVE,true);
                 if (status == IO_STATUS_UNDO) {
                     printf(CUR_UP);
                     stage--;

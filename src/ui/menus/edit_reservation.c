@@ -42,7 +42,7 @@ int edit_reservation_menu(HotelSession *session)
         }
         while (stage == 2) {
             if (id_type == 1) {
-                choice = input(id_buffer, "Room Number: ", 10, INPUT_INT_POSITIVE, true);
+                choice = input(id_buffer, "Room Number: ", 0, 10, INPUT_INT_POSITIVE, true);
                 if (choice == IO_STATUS_UNDO) {
                     stage--;
                     break;
@@ -74,7 +74,7 @@ int edit_reservation_menu(HotelSession *session)
                 stage++;
             }
             if (id_type == 2) {
-                choice = input(id_buffer, "Reservation ID: ", 10, INPUT_INT_POSITIVE, true);
+                choice = input(id_buffer, "Reservation ID: ", 0, 10, INPUT_INT_POSITIVE, true);
                 if (choice == IO_STATUS_UNDO) {
                     stage--;
                     break;
@@ -101,7 +101,7 @@ int edit_reservation_menu(HotelSession *session)
             }
         }
         while (stage == 3) {
-            choice = input(new_reservation.customer.name, "Customer name: ", 100, INPUT_ALPHABETICAL, true);
+            choice = input(new_reservation.customer.name, "Customer name: ", 0, 100, INPUT_ALPHABETICAL, true);
             if (choice == IO_STATUS_UNDO) {
                 printf(CUR_UP);
                 stage--;
@@ -114,7 +114,7 @@ int edit_reservation_menu(HotelSession *session)
             stage++;
         }
         while (stage == 4) {
-            choice = input(new_reservation.customer.email, "Customer email: ", 100, INPUT_EMAIL, true);
+            choice = input(new_reservation.customer.email, "Customer email: ", 0, 100, INPUT_EMAIL, true);
             if (choice == IO_STATUS_UNDO) {
                 printf(CUR_UP);
                 stage--;
@@ -127,7 +127,7 @@ int edit_reservation_menu(HotelSession *session)
             stage++;
         }
         while (stage == 5) {
-            choice = input(new_reservation.customer.phoneNum, "Customer mobile number: ", 15, INPUT_INT_POSITIVE, true);
+            choice = input(new_reservation.customer.phoneNum, "Customer mobile number: ", 11, 12, INPUT_INT_POSITIVE, true);
             if (choice == IO_STATUS_UNDO) {
                 printf(CUR_UP);
                 stage--;
@@ -155,7 +155,7 @@ int edit_reservation_menu(HotelSession *session)
         }
         while (stage == 7) {
             sprintf(nights_count_buffer, "%d", new_reservation.nights_count);
-            choice = input(nights_count_buffer, "Number of nights: ", 3, INPUT_INT_POSITIVE, true);
+            choice = input(nights_count_buffer, "Number of nights: ", 0, 3, INPUT_INT_POSITIVE, true);
             if (choice == IO_STATUS_UNDO) {
                 printf(CUR_UP CUR_UP);
                 stage--;

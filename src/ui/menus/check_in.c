@@ -23,7 +23,7 @@ int check_in(HotelSession *session)
     int old_nights_count;
     while (1) {
         while (reservation == NULL) {
-            status = input(input_buffer, "Reservation ID: ", 9, INPUT_INT_POSITIVE, true);
+            status = input(input_buffer, "Reservation ID: ", 0, 9, INPUT_INT_POSITIVE, true);
             if (status == IO_STATUS_UNDO)
                 continue;
             if (status == IO_STATUS_ESC)
