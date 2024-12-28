@@ -46,65 +46,46 @@ int main()
         switch (response) {
             case 1:
                 response = reserve_room(hotel_session);
-                if (response == MENU_SIGNAL_EXIT)
-                    exit_routine(login_session, hotel_session);
                 break;
 
 
             case 2:
                 response = check_in(hotel_session);
-                if (response == MENU_SIGNAL_EXIT)
-                    exit_routine(login_session, hotel_session);
                 break;
 
 
             case 3:
                 response = cancel_reservation_menu(hotel_session);
-                if (response == MENU_SIGNAL_EXIT)
-                    exit_routine(login_session, hotel_session);
                 break;
 
 
             case 4:
                 response = check_out_menu(hotel_session);
-                if (response == MENU_SIGNAL_EXIT)
-                    exit_routine(login_session, hotel_session);
                 break;
 
 
             case 5:
                 response = availability_menu(hotel_session);
-                if (response == MENU_SIGNAL_EXIT)
-                    exit_routine(login_session, hotel_session);
                 break;
-
 
             case 6:
                 response = view_customer_details(hotel_session);
-                if (response == MENU_SIGNAL_EXIT)
-                    exit_routine(login_session, hotel_session);
                 break;
-
 
             case 7:
                 response = edit_reservation_menu(hotel_session);
-                if (response == MENU_SIGNAL_EXIT)
-                    exit_routine(login_session, hotel_session);
                 break;
-
 
             case 8:
                 response = query_menu(hotel_session);
-                if (response == MENU_SIGNAL_EXIT)
-                    exit_routine(login_session, hotel_session);
                 break;
 
             case 9:
                 response = reservation_report(hotel_session);
-                if (response == MENU_SIGNAL_EXIT)
-                    exit_routine(login_session, hotel_session);
                 break;
         }
+        if (response == MENU_SIGNAL_EXIT)
+            exit_routine(login_session, hotel_session);
     }
 }
 

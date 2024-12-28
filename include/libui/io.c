@@ -149,8 +149,9 @@ int input_date(struct tm *date_buffer, struct tm *lower_bound, struct tm *upper_
     }
 }
 
-int input(char *buffer, char *prompt_s, int max_size, VALIDATION_TYPE input_type, bool edit)
+int input(char *buffer, char *prompt_s, int lower_size_bound , int upper_size_bound, VALIDATION_TYPE input_type, bool edit)
 {
+    if (!lower_size_bound) lower_size_bound = 1;
     printf(CLEAR_LN "%s", prompt_s);
     fflush(stdout);
     echo_t echo_mode = ECHO_THRU;
@@ -208,7 +209,12 @@ int input(char *buffer, char *prompt_s, int max_size, VALIDATION_TYPE input_type
             set_echo(ECHO_ON);
             return IO_STATUS_EXIT;
         }
-        if (c == '\n' && i > 0) {
+        if (c == '\n') {
+            if (i < lower_size_bound) {
+                printf(ERROR_HIGHLIGHT " " CLR_RESET "\b");
+                input_valid = false;
+                continue;
+            }
             if (input_type == INPUT_EMAIL && (email_at_i == -1 || email_dot_i == -1 || buffer[i - 1] == '@' || buffer[
                                                   i - 1] == '.' || buffer[i - 2] == '.')) {
                 printf(ERROR_HIGHLIGHT " " CLR_RESET "\b");
@@ -240,7 +246,7 @@ int input(char *buffer, char *prompt_s, int max_size, VALIDATION_TYPE input_type
             continue;
         }
         input_valid = false;
-        if (i != max_size - 1) {
+        if (i != upper_size_bound - 1) {
             switch (input_type) {
                 case INPUT_ANY:
                     input_valid = (c >= ' ' && c < 127);

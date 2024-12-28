@@ -34,7 +34,7 @@ int cancel_reservation_menu(HotelSession *session)
         while (stage == 2) {
             if (id_type == 1) {
                 room_t *room = NULL;
-                status = input(id_buff, "Room ID: ", 10, INPUT_INT_POSITIVE, true);
+                status = input(id_buff, "Room ID: ", 0, 10, INPUT_INT_POSITIVE, true);
                 if (status == IO_STATUS_UNDO) {
                     stage--;
                     break;
@@ -72,7 +72,7 @@ int cancel_reservation_menu(HotelSession *session)
             }
             if (id_type == 2) {
                 reservation_t *reservation = NULL;
-                status = input(id_buff, "Reservation ID: ", 10, INPUT_INT_POSITIVE, true);
+                status = input(id_buff, "Reservation ID: ", 0, 10, INPUT_INT_POSITIVE, true);
                 if (status == IO_STATUS_UNDO) {
                     stage--;
                     break;

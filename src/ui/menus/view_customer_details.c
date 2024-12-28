@@ -36,7 +36,7 @@ int view_customer_details(HotelSession *session)
         }
         while (stage == 2) {
             if (id_type == 1) {
-                choice = input(buffer, "Room Number: ", 10, INPUT_INT_POSITIVE, true);
+                choice = input(buffer, "Room Number: ", 0, 10, INPUT_INT_POSITIVE, true);
                 if (choice == IO_STATUS_UNDO) {
                     stage--;
                     break;
@@ -68,7 +68,7 @@ int view_customer_details(HotelSession *session)
                 }
             }
             if (id_type == 2) {
-                choice = input(buffer, "Reservation ID: ", 10, INPUT_INT_POSITIVE, true);
+                choice = input(buffer, "Reservation ID: ", 0, 10, INPUT_INT_POSITIVE, true);
                 if (choice == IO_STATUS_UNDO) {
                     stage--;
                     break;
