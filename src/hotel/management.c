@@ -35,6 +35,7 @@ void init_management_session(HotelSession **session_p)
         if (!strcmp(room_category_buffer, "GardenView"))
             rooms_list[i].view_category = GardenView;
         rooms_list[i].reserved = false;
+        rooms_list[i].reservation = empty_reservation;
     }
     fclose(rooms_file);
 
@@ -61,6 +62,7 @@ void init_management_session(HotelSession **session_p)
             reservation.date.tm_year -= 1900;
             reservation.date.tm_mon -= 1;
             mktime(&reservation.date);
+            sanitize_date(&reservation.date);
             reservation.checked_in = !(strcmp(status_buf, "confirmed")) ? true : false;
             reservation.reservation_id = reservation_id_buffer;
             rooms_list[j].reservation = reservation;
@@ -315,14 +317,6 @@ void cull_expired_reservations(HotelSession *hotel_session)
                 }
                 hotel_session->rooms_p[i].reserved = false;
                 hotel_session->rooms_p[i].reservation = empty_reservation;
-            } else
-            {
-                /* Extra file validation; may be unnecessary */
-                if (hotel_session->rooms_p[i].reserved && hotel_session->rooms_p[i].reservation.checked_in)
-                {
-                    hotel_session->rooms_p[i].reserved = false;
-                    hotel_session->rooms_p[i].reservation = empty_reservation;
-                }
             }
         }
     }
