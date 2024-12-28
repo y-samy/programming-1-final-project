@@ -6,7 +6,7 @@
 
 #include "libdate.h"
 
-#define RESERVATIONS_FILE "Reservation.txt"
+#define RESERVATIONS_FILE "reservations.txt"
 #define ROOMS_FILE "Room.txt"
 
 static const reservation_t empty_reservation = {0};
