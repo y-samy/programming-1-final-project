@@ -11,18 +11,18 @@
 
 static const reservation_t empty_reservation = {0};
 
-void init_management_session(HotelSession** session_p)
+void init_management_session(HotelSession **session_p)
 {
     *session_p = malloc(sizeof(HotelSession));
-    HotelSession* hotel_session = *session_p;
+    HotelSession *hotel_session = *session_p;
     size_t i, j;
     hotel_session->customers_overstaying = 0;
-    FILE* rooms_file = fopen(ROOMS_FILE, "r");
+    FILE *rooms_file = fopen(ROOMS_FILE, "r");
     hotel_session->rooms_count = file_entry_count(rooms_file);
     fclose(rooms_file);
     rooms_file = fopen(ROOMS_FILE, "r");
     hotel_session->rooms_p = malloc(sizeof(room_t) * hotel_session->rooms_count);
-    room_t* rooms_list = hotel_session->rooms_p;
+    room_t *rooms_list = hotel_session->rooms_p;
     char availability_buffer[14];
     char room_category_buffer[11];
     for (i = 0; i < hotel_session->rooms_count; i++)
@@ -40,7 +40,7 @@ void init_management_session(HotelSession** session_p)
     }
     fclose(rooms_file);
 
-    FILE* reservations_file = fopen(RESERVATIONS_FILE, "r");
+    FILE *reservations_file = fopen(RESERVATIONS_FILE, "r");
     size_t total_reservations_count = file_entry_count(reservations_file);
     fclose(reservations_file);
     reservations_file = fopen(RESERVATIONS_FILE, "r");
@@ -76,24 +76,16 @@ void init_management_session(HotelSession** session_p)
     fclose(reservations_file);
 }
 
-void terminate_management_session(HotelSession* hotel_session)
+void terminate_management_session(HotelSession *hotel_session)
 {
     size_t i, j, k;
-    FILE* reservations_file = fopen(RESERVATIONS_FILE, "w");
-    FILE* rooms_file = fopen(ROOMS_FILE, "w");
+    FILE *reservations_file = fopen(RESERVATIONS_FILE, "w");
+    FILE *rooms_file = fopen(ROOMS_FILE, "w");
     for (i = 0; i < hotel_session->rooms_count; i++)
     {
-        room_t* room = &hotel_session->rooms_p[i];
+        room_t *room = &hotel_session->rooms_p[i];
         fprintf(rooms_file, "%d %s %s %d\n", room->id, stringify_availability(room),
                 stringify_view(room), room->price);
-        // if (room->reserved)
-        //     fprintf(reservations_file, "%d,%d,%s,%s,%s,%d,%d-%d-%d,%s,%s\n", room->reservation.reservation_id,
-        //             room->id, (room->reservation.checked_in ? "confirmed" : "unconfirmed"),
-        //             room->reservation.customer.name, room->reservation.customer.nationalId,
-        //             room->reservation.nights_count,
-        //             room->reservation.date.tm_mday, room->reservation.date.tm_mon + 1,
-        //             room->reservation.date.tm_year + 1900,
-        //             room->reservation.customer.email, room->reservation.customer.phoneNum);
     }
 
     int count = 0;
@@ -103,7 +95,7 @@ void terminate_management_session(HotelSession* hotel_session)
             count++;
     }
 
-    room_t* reserved_rooms = malloc(sizeof(room_t) * count);
+    room_t *reserved_rooms = malloc(sizeof(room_t) * count);
     count = 0;
 
     for (i = 0; i < hotel_session->rooms_count; i++)
@@ -111,7 +103,6 @@ void terminate_management_session(HotelSession* hotel_session)
         if (hotel_session->rooms_p[i].reserved)
             memcpy(&reserved_rooms[count++], &hotel_session->rooms_p[i], sizeof(room_t));
     }
-
 
     for (i = 0; i < count; i++)
     {
@@ -127,14 +118,15 @@ void terminate_management_session(HotelSession* hotel_session)
     }
 
     for (i = 0; i < count; i++)
-    {   room_t temp_reservation = reserved_rooms[i];
+    {
+        room_t temp_reservation = reserved_rooms[i];
         fprintf(reservations_file, "%d,%d,%s,%s,%s,%d,%d-%d-%d,%s,%s\n", temp_reservation.reservation.reservation_id,
-               temp_reservation.id, (temp_reservation.reservation.checked_in ? "confirmed" : "unconfirmed"),
-               temp_reservation.reservation.customer.name, temp_reservation.reservation.customer.nationalId,
-               temp_reservation.reservation.nights_count,
-               temp_reservation.reservation.date.tm_mday, temp_reservation.reservation.date.tm_mon + 1,
-               temp_reservation.reservation.date.tm_year + 1900,
-               temp_reservation.reservation.customer.email, temp_reservation.reservation.customer.phoneNum);
+                temp_reservation.id, (temp_reservation.reservation.checked_in ? "confirmed" : "unconfirmed"),
+                temp_reservation.reservation.customer.name, temp_reservation.reservation.customer.nationalId,
+                temp_reservation.reservation.nights_count,
+                temp_reservation.reservation.date.tm_mday, temp_reservation.reservation.date.tm_mon + 1,
+                temp_reservation.reservation.date.tm_year + 1900,
+                temp_reservation.reservation.customer.email, temp_reservation.reservation.customer.phoneNum);
     }
 
     free(reserved_rooms);
@@ -145,8 +137,7 @@ void terminate_management_session(HotelSession* hotel_session)
     fclose(rooms_file);
 }
 
-
-reservation_t* get_reservation_by_id(HotelSession* hotel_session, int id)
+reservation_t *get_reservation_by_id(HotelSession *hotel_session, int id)
 {
     size_t i;
     for (i = 0; i < hotel_session->rooms_count; i++)
@@ -157,7 +148,7 @@ reservation_t* get_reservation_by_id(HotelSession* hotel_session, int id)
     return NULL;
 }
 
-static int generate_id(HotelSession* hotel_session)
+static int generate_id(HotelSession *hotel_session)
 {
     time_t t;
     int id;
@@ -166,12 +157,11 @@ static int generate_id(HotelSession* hotel_session)
         t = time(NULL);
         srand(t);
         id = rand() % 100000;
-    }
-    while (get_reservation_by_id(hotel_session, id) != NULL);
+    } while (get_reservation_by_id(hotel_session, id) != NULL);
     return id;
 }
 
-room_t* get_available_room_by_category(HotelSession* hotel_session, room_view_t view_category)
+room_t *get_available_room_by_category(HotelSession *hotel_session, room_view_t view_category)
 {
     size_t i;
     for (i = 0; i < hotel_session->rooms_count; i++)
@@ -182,7 +172,7 @@ room_t* get_available_room_by_category(HotelSession* hotel_session, room_view_t 
     return NULL;
 }
 
-int add_reservation(HotelSession* session, room_t* room, reservation_t reservation)
+int add_reservation(HotelSession *session, room_t *room, reservation_t reservation)
 {
     reservation.reservation_id = generate_id(session);
     room->reservation = reservation;
@@ -190,18 +180,18 @@ int add_reservation(HotelSession* session, room_t* room, reservation_t reservati
     return reservation.reservation_id;
 }
 
-void edit_reservation(HotelSession* hotel_session, room_t* new_room, reservation_t new_reservation, int old_room_id)
+void edit_reservation(HotelSession *hotel_session, room_t *new_room, reservation_t new_reservation, int old_room_id)
 {
     new_room->reservation = new_reservation;
     new_room->reserved = true;
-    room_t* old_room = get_room_by_id(hotel_session, old_room_id);
+    room_t *old_room = get_room_by_id(hotel_session, old_room_id);
     old_room->reserved = false;
     old_room->reservation = create_reservation();
 }
 
-room_t* get_available_rooms(HotelSession* hotel_session)
+room_t *get_available_rooms(HotelSession *hotel_session)
 {
-    static HotelSession* internal_session = NULL;
+    static HotelSession *internal_session = NULL;
     static size_t i = 0;
     if (hotel_session != NULL)
     {
@@ -219,9 +209,9 @@ room_t* get_available_rooms(HotelSession* hotel_session)
     return NULL;
 }
 
-room_t* get_reserved_rooms(HotelSession* hotel_session)
+room_t *get_reserved_rooms(HotelSession *hotel_session)
 {
-    static HotelSession* internal_session = NULL;
+    static HotelSession *internal_session = NULL;
     static size_t i = 0;
     if (hotel_session != NULL)
     {
@@ -239,23 +229,22 @@ room_t* get_reserved_rooms(HotelSession* hotel_session)
     return NULL;
 }
 
-int get_room_id(room_t* room)
+int get_room_id(room_t *room)
 {
     return room->id;
 }
 
-char* stringify_availability(room_t* room)
+char *stringify_availability(room_t *room)
 {
     return (room->reserved) ? "Unavailable" : "Available";
 }
 
-
-room_view_t get_room_view(room_t* room)
+room_view_t get_room_view(room_t *room)
 {
     return room->view_category;
 }
 
-char* stringify_view(room_t* room)
+char *stringify_view(room_t *room)
 {
     switch (room->view_category)
     {
@@ -271,13 +260,12 @@ char* stringify_view(room_t* room)
     }
 }
 
-int get_price_per_night(room_t* room)
+int get_price_per_night(room_t *room)
 {
     return room->price;
 }
 
-
-static void remove_reservation(HotelSession* hotel_session, reservation_t* reservation)
+static void remove_reservation(HotelSession *hotel_session, reservation_t *reservation)
 {
     size_t i;
     for (i = 0; i < hotel_session->rooms_count; i++)
@@ -292,13 +280,12 @@ static void remove_reservation(HotelSession* hotel_session, reservation_t* reser
     }
 }
 
-void cancel_reservation(HotelSession* hotel_session, int id)
+void cancel_reservation(HotelSession *hotel_session, int id)
 {
     remove_reservation(hotel_session, get_reservation_by_id(hotel_session, id));
 }
 
-
-room_t* get_room_by_reservation(HotelSession* hotel_session, reservation_t* reservation_p)
+room_t *get_room_by_reservation(HotelSession *hotel_session, reservation_t *reservation_p)
 {
     size_t i;
     for (i = 0; i < hotel_session->rooms_count; i++)
@@ -316,7 +303,7 @@ reservation_t create_reservation(void)
     return empty_reservation;
 }
 
-room_t* get_room_by_id(HotelSession* hotel_session, int id)
+room_t *get_room_by_id(HotelSession *hotel_session, int id)
 {
     size_t i;
     for (i = 0; i < hotel_session->rooms_count; i++)
@@ -329,9 +316,9 @@ room_t* get_room_by_id(HotelSession* hotel_session, int id)
     return NULL;
 }
 
-room_t* get_room_by_customer_name(HotelSession* session, char* name)
+room_t *get_room_by_customer_name(HotelSession *session, char *name)
 {
-    static HotelSession* internal_session = NULL;
+    static HotelSession *internal_session = NULL;
     static size_t i = 0;
     if (session != NULL)
     {
@@ -350,10 +337,9 @@ room_t* get_room_by_customer_name(HotelSession* session, char* name)
     return NULL;
 }
 
-
-room_t* get_room_by_checkin_date(HotelSession* session, struct tm date)
+room_t *get_room_by_checkin_date(HotelSession *session, struct tm date)
 {
-    static HotelSession* internal_session = NULL;
+    static HotelSession *internal_session = NULL;
     static size_t i = 0;
     if (session != NULL)
     {
@@ -362,8 +348,7 @@ room_t* get_room_by_checkin_date(HotelSession* session, struct tm date)
     }
     while (i < internal_session->rooms_count)
     {
-        if (internal_session->rooms_p[i].reserved && internal_session->rooms_p[i].reservation.checked_in && abs(
-            (int)ceil(difftime(mktime(&date), mktime(&internal_session->rooms_p[i].reservation.date)))) < 86400)
+        if (internal_session->rooms_p[i].reserved && internal_session->rooms_p[i].reservation.checked_in && abs((int)ceil(difftime(mktime(&date), mktime(&internal_session->rooms_p[i].reservation.date)))) < 86400)
         {
             return &internal_session->rooms_p[i++];
         }
@@ -372,7 +357,7 @@ room_t* get_room_by_checkin_date(HotelSession* session, struct tm date)
     return NULL;
 }
 
-void cull_expired_reservations(HotelSession* hotel_session)
+void cull_expired_reservations(HotelSession *hotel_session)
 {
     size_t i;
     int customers_overstaying = 0;
