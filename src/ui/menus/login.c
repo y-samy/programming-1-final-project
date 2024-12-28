@@ -43,7 +43,8 @@ int login_menu(LoginSession *session)
             if (input_status == IO_STATUS_EXIT)
                 return MENU_SIGNAL_EXIT;
             if (!((input_valid = verify_password(session, password)))) {
-                printf(CLEAR_LN ERROR_HIGHLIGHT "Incorrect password! %d attempts remaining." CLR_RESET CUR_UP CLEAR_LN, get_remaining_attempts(session));
+                printf(CLEAR_LN ERROR_HIGHLIGHT "Incorrect password! %d attempt%s remaining." CLR_RESET CUR_UP
+                    CLEAR_LN, get_remaining_attempts(session), get_remaining_attempts(session)>1?"s":"");
                 password[0] = '\0';
             }
         } while (!input_valid && can_attempt(session));
