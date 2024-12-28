@@ -37,7 +37,7 @@ int check_in(HotelSession *session)
                 continue;
             }
             if (difftime(mktime(&today), mktime(&(reservation->date))) < 0) {
-                printf(CLEAR_LN ERROR_HIGHLIGHT "Cannot reserve yet, come back another day" CLR_RESET CUR_UP);
+                printf(CLEAR_LN ERROR_HIGHLIGHT "Cannot check-in yet, come back another day" CLR_RESET CUR_UP);
                 reservation = NULL;
                 continue;
             }

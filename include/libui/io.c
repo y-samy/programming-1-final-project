@@ -149,7 +149,7 @@ int input_date(struct tm *date_buffer, struct tm *lower_bound, struct tm *upper_
     }
 }
 
-int input(char *buffer, char *prompt_s, int max_size, int input_type, bool edit)
+int input(char *buffer, char *prompt_s, int max_size, VALIDATION_TYPE input_type, bool edit)
 {
     printf(CLEAR_LN "%s", prompt_s);
     fflush(stdout);
@@ -163,6 +163,7 @@ int input(char *buffer, char *prompt_s, int max_size, int input_type, bool edit)
     int c;
     bool input_valid = false;
     int floating_point_i = -1;
+    int first_significant_digit_i = -1;
     int email_at_i = -1;
     int email_dot_i = -1;
     if (edit) {
@@ -214,6 +215,11 @@ int input(char *buffer, char *prompt_s, int max_size, int input_type, bool edit)
                 input_valid = false;
                 continue;
             }
+            if (input_type == INPUT_INT_POSITIVE && (first_significant_digit_i == -1)) {
+                printf(ERROR_HIGHLIGHT " " CLR_RESET "\b");
+                input_valid = false;
+                continue;
+            }
             printf(" \n");
             break;
         }
@@ -229,6 +235,8 @@ int input(char *buffer, char *prompt_s, int max_size, int input_type, bool edit)
                 email_at_i = -1;
             if (i == email_dot_i)
                 email_dot_i = -1;
+            if (i == first_significant_digit_i)
+                first_significant_digit_i = -1;
             continue;
         }
         input_valid = false;
@@ -241,8 +249,12 @@ int input(char *buffer, char *prompt_s, int max_size, int input_type, bool edit)
                 case INPUT_PASSWORD:
                     input_valid = (c > ' ' && c < 127);
                     break;
+                case INT_POSITIVE_ALLOW_LEADING_ZEROES:
+                    input_valid = (c >= '0' && c <= '9');
                 case INPUT_INT_POSITIVE:
                     input_valid = (c >= '0' && c <= '9');
+                    if (c != '0' && input_valid && first_significant_digit_i == -1)
+                        first_significant_digit_i = i;
                     break;
                 case INPUT_INT_ANY:
                     input_valid = (i == 0 && c == '-') || (c >= '0' && c <= '9');

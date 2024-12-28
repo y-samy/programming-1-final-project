@@ -39,7 +39,7 @@ int reserve_room(HotelSession *session)
             stage++;
         }
         while (stage == 2) {
-            choice = input(reservation.customer.nationalId, "Customer national ID: ", 15, INPUT_INT_ANY, true);
+            choice = input(reservation.customer.nationalId, "Customer national ID: ", 15, INPUT_INT_POSITIVE, true);
             if (choice == IO_STATUS_UNDO) {
                 printf(CUR_UP);
                 stage--;
