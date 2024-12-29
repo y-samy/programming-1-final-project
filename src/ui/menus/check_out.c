@@ -46,7 +46,7 @@ int check_out_menu(HotelSession *session)
             room = get_room_by_reservation(session, reservation);
             nights_count = (int) ceil(difftime(mktime(&today), mktime(&reservation->date))) / 86400;
             price = nights_count ? room->price * nights_count : room->price;
-            printf("Price: %d\n", price);
+            printf(CLEAR_LN "\nPrice: %d\n", price);
             cancel_reservation(session, reservation->reservation_id);
         }
         status = choices("Undo Check-out\nCheck-out Another Customer\nMain Menu\nExit\n");
@@ -57,8 +57,11 @@ int check_out_menu(HotelSession *session)
             room = NULL;
             display_menu(MENU_STATIC);
         }
-        if (status == 2)
+        if (status == 2) {
             reservation = NULL;
+            room = NULL;
+            display_menu(MENU_STATIC);
+        }
         if (status == IO_STATUS_ESC || status == 3)
             return MENU_SIGNAL_PROCEED;
         if (status == IO_STATUS_EXIT || status == 4)
