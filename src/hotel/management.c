@@ -76,6 +76,12 @@ void init_management_session(HotelSession **session_p)
     fclose(reservations_file);
 }
 
+void discard_management_session(HotelSession *hotel_session)
+{
+    free(hotel_session->rooms_p);
+    free(hotel_session);
+}
+
 void terminate_management_session(HotelSession *hotel_session)
 {
     size_t i, j, k;

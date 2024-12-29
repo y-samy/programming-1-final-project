@@ -58,3 +58,4 @@ room_t *get_room_by_customer_name(HotelSession *session, char *name);
 room_t *get_room_by_checkin_date(HotelSession *session, struct tm date);
 
 void cull_expired_reservations(HotelSession *hotel_session);
+void discard_management_session(HotelSession *hotel_session);

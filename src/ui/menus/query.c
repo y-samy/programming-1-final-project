@@ -50,7 +50,7 @@ int query_menu(HotelSession *session)
                     continue;
                 }
                 while (room != NULL) {
-                    printf(CLEAR_LN
+                    printf(CLEAR_LN CUR_DOWN
                            "Customer Name: %s\nPhone Number: %s\nEmail: %s\nRoom Number: %d\nReservation Date: %s\nNumber of nights: %d\nChecked-in: %s\n\n",
                            room->reservation.customer.name, room->reservation.customer.phoneNum,
                            room->reservation.customer.email, room->id, stringify_date(&room->reservation.date),
@@ -81,7 +81,7 @@ int query_menu(HotelSession *session)
                         CLR_RESET CUR_UP, room_id);
                     continue;
                 }
-                printf("Room View: %s\nReserved: %s\n", stringify_view(room), (room->reserved) ? "YES" : "NO");
+                printf(CLEAR_LN CUR_DOWN "Room View: %s\nReserved: %s\n", stringify_view(room), (room->reserved) ? "YES" : "NO");
                 if (room->reserved)
                     printf(
                        "Customer Name: %s\nPhone Number: %s\nEmail: %s\nRoom Number: %d\nReservation Date: %s\nNumber of nights: %d\nChecked-in: %s\n\n",

@@ -56,7 +56,7 @@ int cancel_reservation_menu(HotelSession *session)
                     printf(CLEAR_LN ERROR_HIGHLIGHT "Cannot cancel after check-in." CLR_RESET CUR_UP);
                     continue;
                 }
-                printf(CLEAR_LN TABLE_HIGHLIGHT "Are you sure you want to cancel the reservation? This action is irreversible.\n\n");
+                printf(CLEAR_LN TABLE_HIGHLIGHT "Are you sure you want to cancel the reservation? This action is irreversible." CLR_RESET "\n\n");
                 status = choices("Confirm\nUndo\nMain Menu\nExit\n");
                 if (status == IO_STATUS_ESC || status == 3)
                     return MENU_SIGNAL_CANCEL;
@@ -90,7 +90,7 @@ int cancel_reservation_menu(HotelSession *session)
                     printf(CLEAR_LN ERROR_HIGHLIGHT "Cannot cancel after check-in." CLR_RESET CUR_UP);
                     continue;
                 }
-                printf(CLEAR_LN TABLE_HIGHLIGHT "Are you sure you want to cancel the reservation? This action is irreversible.\n\n");
+                printf(CLEAR_LN TABLE_HIGHLIGHT "Are you sure you want to cancel the reservation? This action is irreversible." CLR_RESET "\n\n");
                 status = choices("Confirm\nUndo\nMain Menu\nExit\n");
                 if (status == IO_STATUS_ESC || status == 3)
                     return MENU_SIGNAL_CANCEL;

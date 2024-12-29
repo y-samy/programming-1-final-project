@@ -56,7 +56,7 @@ int view_customer_details(HotelSession *session)
                     continue;
                 }
                 customer_t customer = room->reservation.customer;
-                printf(CUR_DOWN CLEAR_LN "Customer details\n\nName: %s\nEmail: %s\nPhone Number: %s\n\n", customer.name, customer.email, customer.phoneNum);
+                printf(CLEAR_LN CUR_DOWN CLEAR_LN "Customer details\n\nName: %s\nEmail: %s\nPhone Number: %s\n\n", customer.name, customer.email, customer.phoneNum);
                 choice = choices("Main Menu\nExit\n");
                 if (choice == IO_STATUS_ESC || choice == 1)
                     return MENU_SIGNAL_CANCEL;
@@ -84,7 +84,7 @@ int view_customer_details(HotelSession *session)
                     continue;
                 }
                 customer_t customer = reservation->customer;
-                printf(CUR_DOWN CLEAR_LN "Customer details\n\nName: %s\nEmail: %s\nPhone Number: %s\n\n", customer.name, customer.email, customer.phoneNum);
+                printf(CLEAR_LN CUR_DOWN CLEAR_LN "Customer details\n\nName: %s\nEmail: %s\nPhone Number: %s\n\n", customer.name, customer.email, customer.phoneNum);
                 choice = choices("Main Menu\nExit\n");
                 if (choice == IO_STATUS_ESC || choice == 1)
                     return MENU_SIGNAL_CANCEL;

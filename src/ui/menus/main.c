@@ -16,7 +16,8 @@
 "Query (search)\n"\
 "Reservation Report\n"\
 "Sign Out\n"\
-"Exit\n"
+"Exit\n"\
+"Exit Without Saving\n"
 
 
 int main_menu(HotelSession *session)
@@ -33,6 +34,8 @@ int main_menu(HotelSession *session)
             return MENU_SIGNAL_CANCEL;
         if (choice == 11 || choice == IO_STATUS_EXIT)
             return MENU_SIGNAL_EXIT;
+        if (choice == 12)
+            return MENU_SIGNAL_EXIT_ABRUPT;
         return choice;
     }
 }

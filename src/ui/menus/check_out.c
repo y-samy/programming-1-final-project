@@ -6,7 +6,7 @@
 #include <libui/io.h>
 
 #define MENU_STATIC \
-    "CHECK-IN\n"\
+    "CHECK-OUT\n"\
     "--------\n"
 
 int check_out_menu(HotelSession *session)

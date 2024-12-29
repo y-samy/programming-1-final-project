@@ -8,6 +8,7 @@
 #include "menus/edit_reservation.h"
 
 void exit_routine(LoginSession *login_session, HotelSession *hotel_session);
+void discard_exit_routine(LoginSession *login_session, HotelSession *hotel_session);
 
 int main()
 {
@@ -39,6 +40,9 @@ int main()
         response = main_menu(hotel_session);
         if (response == MENU_SIGNAL_EXIT)
             exit_routine(login_session, hotel_session);
+        if (response == MENU_SIGNAL_EXIT_ABRUPT) {
+            discard_exit_routine(login_session, hotel_session);
+        }
         if (response == MENU_SIGNAL_CANCEL) {
             logout(login_session);
             continue;
@@ -96,5 +100,12 @@ void exit_routine(LoginSession *login_session, HotelSession *hotel_session)
     terminate_login_session(login_session);
     /* Serialize and unload reservation, rooms and customer objects */
     terminate_management_session(hotel_session);
+    exit(0);
+}
+
+void discard_exit_routine(LoginSession *login_session, HotelSession *hotel_session)
+{
+    terminate_login_session(login_session);
+    discard_management_session(hotel_session);
     exit(0);
 }

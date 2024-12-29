@@ -180,6 +180,14 @@ int input(char *buffer, char *prompt_s, int lower_size_bound , int upper_size_bo
                     email_dot_i = j;
             }
         }
+        if (input_type == INPUT_INT_POSITIVE) {
+            int j;
+            for (j = 0; j < i; j++) {
+                c = buffer[j];
+                if (c > '0' && c <= '9' && first_significant_digit_i == -1)
+                    first_significant_digit_i = j;
+            }
+        }
     } else
         buffer[0] = '\0';
     while (true) {
