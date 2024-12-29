@@ -4,7 +4,7 @@
 #include <libui/io.h>
 #include <libui/charcodes.h>
 
-#include "status.h"
+#include "../status.h"
 
 #define MENU_STATIC \
 "Welcome to the hotel's reservation system.\n"\

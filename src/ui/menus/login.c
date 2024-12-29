@@ -1,5 +1,5 @@
 #include "login.h"
-#include "status.h"
+#include "../status.h"
 #include <libui/io.h>
 
 #define MENU_STATIC\

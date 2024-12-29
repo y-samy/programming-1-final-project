@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <management.h>
 
-#include "status.h"
+#include "../status.h"
 
 #define MENU_STATIC \
     "SEARCH CUSTOMER DETAILS\n"\

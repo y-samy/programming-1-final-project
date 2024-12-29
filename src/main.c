@@ -28,30 +28,30 @@ int main()
         if (!is_logged_in(login_session)) {
             response = root_menu();
             if (response == MENU_SIGNAL_EXIT)
-                exit_routine(login_session, hotel_session);
+                if (exit_menu(login_session, hotel_session) == MENU_SIGNAL_CANCEL)
+                    continue;
 
             response = login_menu(login_session);
             if (response == MENU_SIGNAL_EXIT)
-                exit_routine(login_session, hotel_session);
+                if (exit_menu(login_session, hotel_session) == MENU_SIGNAL_CANCEL)
+                    continue;
             if (response == MENU_SIGNAL_CANCEL)
                 continue;
         }
 
         response = main_menu(hotel_session);
         if (response == MENU_SIGNAL_EXIT)
-            exit_routine(login_session, hotel_session);
-        if (response == MENU_SIGNAL_EXIT_ABRUPT) {
-            discard_exit_routine(login_session, hotel_session);
-        }
+            if (exit_menu(login_session, hotel_session) == MENU_SIGNAL_CANCEL)
+                continue;
         if (response == MENU_SIGNAL_CANCEL) {
             logout(login_session);
             continue;
         }
+
         switch (response) {
             case 1:
                 response = reserve_room(hotel_session);
                 break;
-
 
             case 2:
                 response = check_in(hotel_session);
@@ -89,23 +89,6 @@ int main()
                 break;
         }
         if (response == MENU_SIGNAL_EXIT)
-            exit_routine(login_session, hotel_session);
+            exit_menu(login_session, hotel_session);
     }
-}
-
-
-void exit_routine(LoginSession *login_session, HotelSession *hotel_session)
-{
-    /* Unload user objects */
-    terminate_login_session(login_session);
-    /* Serialize and unload reservation, rooms and customer objects */
-    terminate_management_session(hotel_session);
-    exit(0);
-}
-
-void discard_exit_routine(LoginSession *login_session, HotelSession *hotel_session)
-{
-    terminate_login_session(login_session);
-    discard_management_session(hotel_session);
-    exit(0);
 }

@@ -3,7 +3,7 @@
 #include <libui/io.h>
 #include <management.h>
 
-#include "status.h"
+#include "../status.h"
 
 #define MENU_STATIC \
 "RESERVATION\n"\

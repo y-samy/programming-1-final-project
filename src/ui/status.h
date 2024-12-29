@@ -1,0 +1,3 @@
+#pragma once
+
+typedef enum { MENU_SIGNAL_EXIT = -4, MENU_SIGNAL_CANCEL, MENU_SIGNAL_PROCEED, MENU_SIGNAL_EXIT_ABRUPT } MenuSignal;

@@ -23,7 +23,7 @@ add_executable(hotel src/main.c
         src/ui/menus/reservation.h
         src/ui/menus/check_in.c
         src/ui/menus/check_in.h
-        src/ui/menus/status.h
+        src/ui/status.h
         src/ui/menus/cancel_reservation.c
         src/ui/menus/cancel_reservation.h
         src/ui/menus/view_customer_details.c
@@ -52,6 +52,8 @@ add_executable(hotel src/main.c
         src/ui/menus/edit_reservation.h
         src/ui/menus/check_out.c
         src/ui/menus/check_out.h
+        src/ui/menus/exit_menu.c
+        src/ui/menus/exit_menu.h
 )
 
 target_link_libraries(hotel)

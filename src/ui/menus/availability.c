@@ -2,7 +2,7 @@
 #include <libui/io.h>
 #include <stdio.h>
 
-#include "status.h"
+#include "../status.h"
 
 #define MENU_STATIC \
 "CHECK ROOM AVAILABILITY\n"\

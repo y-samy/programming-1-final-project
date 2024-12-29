@@ -1,5 +1,5 @@
 #include "check_in.h"
-#include "status.h"
+#include "../status.h"
 
 #include <math.h>
 #include <stdio.h>

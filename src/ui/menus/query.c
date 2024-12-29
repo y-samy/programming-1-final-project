@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "status.h"
+#include "../status.h"
 
 #define MENU_OPTIONS \
 "By Customer Name\n"\

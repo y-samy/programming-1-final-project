@@ -5,7 +5,7 @@
 #include <management.h>
 #include <stdio.h>
 
-#include "status.h"
+#include "../status.h"
 
 #define MENU_STATIC \
     "CANCEL RESERVATION\n"\

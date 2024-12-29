@@ -1,6 +1,6 @@
 #include "edit_reservation.h"
 #include <libui/io.h>
-#include "status.h"
+#include "../status.h"
 #include <stdio.h>
 #include <stdlib.h>
 

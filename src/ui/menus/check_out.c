@@ -1,5 +1,5 @@
 #include "check_out.h"
-#include "status.h"
+#include "../status.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
