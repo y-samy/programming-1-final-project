@@ -66,9 +66,9 @@ int cancel_reservation_menu(HotelSession *session)
                     stage--;
                     break;
                 }
-                cancel_reservation(session,id);
+                cancel_reservation(session,room->reservation.reservation_id);
                 printf(CLEAR_LN "\nReservation %d has successfully been cancelled\n", id);
-                return MENU_SIGNAL_PROCEED;
+                return MENU_SIGNAL_CANCEL;
             }
             if (id_type == 2) {
                 reservation_t *reservation = NULL;
