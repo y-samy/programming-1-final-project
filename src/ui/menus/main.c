@@ -23,7 +23,7 @@ int main_menu(HotelSession *session)
     int choice;
     display_menu(MENU_STATIC);
     if (session->customers_overstaying)
-        printf(ERROR_HIGHLIGHT "Some customers are currently overstaying\n\n");
+        printf(ERROR_HIGHLIGHT "Some customers are currently overstaying" CLR_RESET "\n\n");
     while (1) {
         choice = choices(MENU_CHOICES);
         if (choice == IO_STATUS_UNDO)
